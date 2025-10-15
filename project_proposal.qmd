@@ -1,0 +1,84 @@
+---
+title: "Project Proposal"
+
+tbl-cap-location: bottom
+---
+
+## Project Overview
+This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly.
+Additionally, once the song has finished, the project will grade the user's performance — with both a numeric score and letter grade — based on how on-pitch they are.
+
+
+## Specifications
+* Design allows the user to choose a song through external hardware
+* Design detects input notes between A3 and B5 (220 Hz to 1000 Hz)
+* Design scores the user’s singing by comparing detected and expected notes
+* Displays properly-timed notes/lyrics on an LCD
+* LCD display does not flicker
+
+
+## Project Management
+### Bill of Materials
+| **Part Name**                         | **Part Number**                                               | **Quantity** | **Price**                                                   | **Link**                     |
+|:-------------------------------------:|:-------------------------------------------------------------:|:-----------:|:-----:|:------:|
+| Adafruit PDM MEMS Microphone Breakout | [MP34DT01-M](https://www.st.com/en/audio-ics/mp34dt01-m.html) | 1            | $11.23 *($4.95 part, $6.28 shipping and tax)*               | [Adafruit](https://www.adafruit.com/product/3492)           |
+| Hosyond I2C 2004 LCD Module           | LCD2004                                                       | 1            | $26.32 *($16.99 part, $6.99 shipping, $2.34 estimated tax)* | [Amazon](https://www.amazon.com/gp/product/B0C1G9GBRZ?th=1) |
+| **TOTAL**                             | | | $37.55 | |
+: Bill of materials {#tbl-bom}
+
+### Timeline
+|                            | **Task(s)**                                       | **Date** |
+|:--------------------------:|:-------------------------------------------------:|:--------:|
+| *Project proposal*         | Finish project proposal                           | 10/16/25 |
+|                            | Start project                                     | 10/30/25 |
+|                            | Study PDM to PCM decimation                       | 11/6/25  |
+| *Design review*            | Prepare slides for design review                  | 11/7/25  |
+|                            | Implement new decimation FPGA functionality       | 11/13/25 |
+| *Midpoint report and demo* | Finish midpoint report and prepare demo           | 11/16/25 |
+|                            | Detect all input notes accurately with microphone | 11/20/25 |
+|                            | Synchronize LCD output notes/lyrics with song(s)  | 11/27/25 |
+|                            | Polish off project's final appearance             | 12/3/25  |
+| *Final checkoff*           | Finish project completely                         | 12/5/25  |
+| *Final report*             | Finish final report                               | 12/7/25  |
+| *Demo day*                 |                                                   | 12/8/25  |
+: Rough timeline with key dates {#tbl-timeline}
+
+### Task Delegation
++-------------------------------------------+-------------------------------------------+
+| **Mayu**                                  | **Quinn**                                 |
++:==========================================+:==========================================+
+| - Study PDM to PCM decimation             | - Study PDM to PCM decimation             |
++-------------------------------------------+-------------------------------------------+
+| - Start FPGA code                         | - Start LCD code                          |
+|                                           | - Transcribe song(s)                      |
++-------------------------------------------+-------------------------------------------+
+| - Check LCD code                          | - Check FPGA code                         |
++-------------------------------------------+-------------------------------------------+
+| - Study FFT calculations and libraries    | - Study FFT calculations and libraries    |
++-------------------------------------------+-------------------------------------------+
+| - Decide on interrupts and timers for MCU | - Decide on interrupts and timers for MCU |
++-------------------------------------------+-------------------------------------------+
+| - Assemble circuit                        | - Check circuit                           |
++-------------------------------------------+-------------------------------------------+
+| - Write verification                      | - Write verification                      |
++-------------------------------------------+-------------------------------------------+
+| - Document                                | - Document                                |
++-------------------------------------------+-------------------------------------------+
+: Task delegation {#tbl-task-delegation}
+
+
+## Design Details
+### New MCU Functionality
+
+### New FPGA Functionality
+
+### Non-Trivial New Hardware
+
+### Riskiest Element
+
+
+## Technical Documentation
+### Block Diagram
+
+
+### Calculations of Critical Parameters
