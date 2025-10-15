@@ -1,1 +1,1 @@
-Repository hosting the contents of the GitHub pages site for our E155 Final PRoject.
+Repository hosting the contents of the GitHub pages site for our E155 Final Project.
