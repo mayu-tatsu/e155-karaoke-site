@@ -68,15 +68,20 @@ Note that any additional, basic resources (such as resistors, capacitors, etc.) 
 +-------------------------------------------+-------------------------------------------+
 : Task delegation {#tbl-task-delegation}
 
+Overall, the team hopes to complete the vast majority of the project's tasks together, so as to receive an equal and wholistic learning experience.
+
 
 ## Design Details
 ### New MCU Functionality
+The new MCU functionality intended to be used is the I2C interface peripheral, which will enable communication with the LCD.
 
 
 ### New FPGA Functionality
+The new FPGA functionality intended to be used is decimation.
+In short, decimation is a term in (digital) signal processing that describes the removal of samples so as to reduce the complexity of subsequent computations.
 
-
-### Non-Trivial New Hardware
+### New Non-Trivial Hardware
+The two new, non-trivial pieces of hardware that will be used in this project are the Hoysond LCD module and the Adafruit PDM microphone.
 
 
 ### Riskiest Element

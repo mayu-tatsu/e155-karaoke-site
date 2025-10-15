@@ -7,3 +7,7 @@ about:
     template: jolla
 ---
 
+## About the Team
+Quinn Miyamoto *(pictured on the left)* is a junior engineering major at Harvey Mudd College. More specifically, she is interested in digital electronics and mechanical design. So far, she has completed courses pertaining to computer architecture, electricity and magnetism, and system-on-chip design. She has a Level Two CAD certification in Rhino, and works as a Makerspace steward for Harvey Mudd College, with a certification to teach users welding. When she is not working, you can find her reading manga/manhwa, binging bad Netflix shows, gaming, or rock-climbing.
+
+Mayu Tatsumi *(pictured on the right)* is a junior studying Engineering at Harvey Mudd College. She is interested in working in the camera and lighting industries and would like to become involved as an electrical engineer. She has prior experience working as a Systems Control intern specifically working on embedded systems and writing firmware. Outside of engineering, she is interested in movie & TV production, Formula 1, and gaming.
