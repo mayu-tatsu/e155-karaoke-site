@@ -1,5 +1,10 @@
 ---
 title: "E155 Karaoke Final Project"
+
+image: images/headshot.jpg
+
+about:
+    template: jolla
 ---
 
 This is a Quarto website.
