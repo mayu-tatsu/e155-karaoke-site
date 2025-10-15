@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -160,15 +160,15 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="project-overview" class="level2">
 <h2 class="anchored" data-anchor-id="project-overview">Project Overview</h2>
-<p>This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly. Additionally, once the song has finished, the project will grade the user’s performance — with both a numeric score and letter grade — based on how on-pitch they are.</p>
+<p>This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly. Once the song has finished, the project will grade the user’s performance — with both a numeric score and letter grade — based on how on-pitch they are.</p>
 </section>
 <section id="specifications" class="level2">
 <h2 class="anchored" data-anchor-id="specifications">Specifications</h2>
 <ul>
 <li>Design allows the user to choose a song through external hardware</li>
-<li>Design detects input notes between A3 and B5 (220 Hz to 1000 Hz)</li>
+<li>Design detects input notes between A3 and roughly B5 (220 Hz to 1000 Hz)</li>
 <li>Design scores the user’s singing by comparing detected and expected notes</li>
-<li>Displays properly-timed notes/lyrics on an LCD</li>
+<li>Displays properly-timed lyrics/notes on an LCD screen</li>
 <li>LCD display does not flicker</li>
 </ul>
 </section>
@@ -194,7 +194,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: center;">Adafruit PDM MEMS Microphone Breakout</td>
 <td style="text-align: center;"><a href="https://www.st.com/en/audio-ics/mp34dt01-m.html">MP34DT01-M</a></td>
 <td style="text-align: center;">1</td>
-<td style="text-align: center;">$11.23 <em>($4.95 part, $6.28 shipping and tax)</em></td>
+<td style="text-align: center;">$11.23 <em>($4.95 part, $6.28 shipping + tax)</em></td>
 <td style="text-align: center;"><a href="https://www.adafruit.com/product/3492">Adafruit</a></td>
 </tr>
 <tr class="even">
@@ -219,7 +219,7 @@ Table&nbsp;1: Bill of materials
 </figcaption>
 </figure>
 </div>
-<p>Note that any additional, basic resources (such as resistors, capacitors, etc.) needed will be taken from either the Engineering Stockroom or Digital Lab for free.</p>
+<p>Note that any additional, basic resources (such as resistors, capacitors, etc.) needed will be taken from either the Engineering Stockroom or Digital Lab at no cost.</p>
 </section>
 <section id="timeline" class="level3">
 <h3 class="anchored" data-anchor-id="timeline">Timeline</h3>
@@ -385,10 +385,10 @@ Table&nbsp;2: Rough timeline with key dates
 </tr>
 <tr class="even">
 <td style="text-align: left;"><ul>
-<li>Document</li>
+<li>Write Documentation</li>
 </ul></td>
 <td style="text-align: left;"><ul>
-<li>Document</li>
+<li>Write Documentation</li>
 </ul></td>
 </tr>
 </tbody>
@@ -399,7 +399,7 @@ Table&nbsp;3: Task delegation
 </figcaption>
 </figure>
 </div>
-<p>Overall, the team hopes to complete the vast majority of the project’s tasks together, so as to receive an equal and wholistic learning experience.</p>
+<p>Overall, the team hopes to complete the vast majority of the project’s tasks together, so as to receive an equal and holistic learning experience.</p>
 </section>
 </section>
 <section id="design-details" class="level2">
@@ -418,7 +418,7 @@ Table&nbsp;3: Task delegation
 </section>
 <section id="riskiest-element" class="level3">
 <h3 class="anchored" data-anchor-id="riskiest-element">Riskiest Element</h3>
-<p>The riskiest element of the project will likely be integrating the aforementioned microphone decimation involving CIC and FIR filters; at the moment, the team does not know anything about this, nor how to implement it, so it is hard to assess both the amount and difficulty of the workload before actually diving into it. Furthermore, the decimation will have to be done using the FPGA, which means that there is less library support in the case that any complicated software needs to be configured.</p>
+<p>The riskiest element of the project will likely be integrating the aforementioned PDM to PCM decimation on the FPGA, which involves CIC and FIR filters; at the moment, the team does not know anything about this, nor how to implement it, so it is hard to assess both the amount and difficulty of the workload before actually diving into it. It requires a decent amount of math and selectivity for it to function for our purposes, which we will be learning along the way. We will attempt to mitigate these risks by utilizing reference designs and validating incrementally on the FPGA.</p>
 </section>
 </section>
 <section id="technical-documentation" class="level2">
