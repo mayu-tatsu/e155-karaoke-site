@@ -19,11 +19,11 @@ Additionally, once the song has finished, the project will grade the user's perf
 
 ## Project Management
 ### Bill of Materials
-| **Part Name**                         | **Part Number**                                               | **Quantity** | **Price**                                                   | **Link**                     |
-|:-------------------------------------:|:-------------------------------------------------------------:|:-----------:|:-----:|:------:|
+| **Part Name**                         | **Part Number**                                               | **Quantity** | **Price**                                                   | **Link**                                                    |
+|:-------------------------------------:|:-------------------------------------------------------------:|:------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
 | Adafruit PDM MEMS Microphone Breakout | [MP34DT01-M](https://www.st.com/en/audio-ics/mp34dt01-m.html) | 1            | $11.23 *($4.95 part, $6.28 shipping and tax)*               | [Adafruit](https://www.adafruit.com/product/3492)           |
 | Hosyond I2C 2004 LCD Module           | LCD2004                                                       | 1            | $26.32 *($16.99 part, $6.99 shipping, $2.34 estimated tax)* | [Amazon](https://www.amazon.com/gp/product/B0C1G9GBRZ?th=1) |
-| **TOTAL**                             | | | $37.55 | |
+| **TOTAL**                             |                                                               |              | $37.55                                                      |                                                             |
 : Bill of materials {#tbl-bom}
 
 ### Timeline
