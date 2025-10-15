@@ -26,6 +26,8 @@ Additionally, once the song has finished, the project will grade the user's perf
 | **TOTAL**                             |                                                               |              | $37.55                                                      |                                                             |
 : Bill of materials {#tbl-bom}
 
+Note that any additional, basic resources (such as resistors, capacitors, etc.) needed will be taken from either the Engineering Stockroom or Digital Lab for free.
+
 ### Timeline
 |                            | **Task(s)**                                       | **Date** |
 |:--------------------------:|:-------------------------------------------------:|:--------:|
@@ -70,11 +72,16 @@ Additionally, once the song has finished, the project will grade the user's perf
 ## Design Details
 ### New MCU Functionality
 
+
 ### New FPGA Functionality
+
 
 ### Non-Trivial New Hardware
 
+
 ### Riskiest Element
+The riskiest element of the project will likely be integrating the aforementioned microphone decimation involving CIC and FIR filters; at the moment, the team does not know anything about this, nor how to implement it, so it is hard to assess both the amount and difficulty of the workload before actually diving into it.
+Furthermore, the decimation will have to be done using the FPGA, which means that there is less library support in the case that any complicated software needs to be configured.
 
 
 ## Technical Documentation
