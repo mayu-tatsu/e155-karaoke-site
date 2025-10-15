@@ -5,15 +5,14 @@ tbl-cap-location: bottom
 ---
 
 ## Project Overview
-This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly.
-Additionally, once the song has finished, the project will grade the user's performance — with both a numeric score and letter grade — based on how on-pitch they are.
+This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly. Once the song has finished, the project will grade the user's performance — with both a numeric score and letter grade — based on how on-pitch they are.
 
 
 ## Specifications
 * Design allows the user to choose a song through external hardware
-* Design detects input notes between A3 and B5 (220 Hz to 1000 Hz)
+* Design detects input notes between A3 and roughly B5 (220 Hz to 1000 Hz)
 * Design scores the user’s singing by comparing detected and expected notes
-* Displays properly-timed notes/lyrics on an LCD
+* Displays properly-timed lyrics/notes on an LCD screen
 * LCD display does not flicker
 
 
@@ -21,12 +20,12 @@ Additionally, once the song has finished, the project will grade the user's perf
 ### Bill of Materials
 | **Part Name**                         | **Part Number**                                               | **Quantity** | **Price**                                                   | **Link**                                                    |
 |:-------------------------------------:|:-------------------------------------------------------------:|:------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
-| Adafruit PDM MEMS Microphone Breakout | [MP34DT01-M](https://www.st.com/en/audio-ics/mp34dt01-m.html) | 1            | $11.23 *($4.95 part, $6.28 shipping and tax)*               | [Adafruit](https://www.adafruit.com/product/3492)           |
+| Adafruit PDM MEMS Microphone Breakout | [MP34DT01-M](https://www.st.com/en/audio-ics/mp34dt01-m.html) | 1            | $11.23 *($4.95 part, $6.28 shipping + tax)*               | [Adafruit](https://www.adafruit.com/product/3492)           |
 | Hosyond I2C 2004 LCD Module           | LCD2004                                                       | 1            | $26.32 *($16.99 part, $6.99 shipping, $2.34 estimated tax)* | [Amazon](https://www.amazon.com/gp/product/B0C1G9GBRZ?th=1) |
 | **TOTAL**                             |                                                               |              | $37.55                                                      |                                                             |
 : Bill of materials {#tbl-bom}
 
-Note that any additional, basic resources (such as resistors, capacitors, etc.) needed will be taken from either the Engineering Stockroom or Digital Lab for free.
+Note that any additional, basic resources (such as resistors, capacitors, etc.) needed will be taken from either the Engineering Stockroom or Digital Lab at no cost.
 
 ### Timeline
 |                            | **Task(s)**                                       | **Date** |
@@ -64,17 +63,16 @@ Note that any additional, basic resources (such as resistors, capacitors, etc.) 
 +-------------------------------------------+-------------------------------------------+
 | - Write verification                      | - Write verification                      |
 +-------------------------------------------+-------------------------------------------+
-| - Document                                | - Document                                |
+| - Write Documentation                     | - Write Documentation                     |
 +-------------------------------------------+-------------------------------------------+
 : Task delegation {#tbl-task-delegation}
 
-Overall, the team hopes to complete the vast majority of the project's tasks together, so as to receive an equal and wholistic learning experience.
+Overall, the team hopes to complete the vast majority of the project's tasks together, so as to receive an equal and holistic learning experience.
 
 
 ## Design Details
 ### New MCU Functionality
 The new MCU functionality intended to be used is the I2C interface peripheral, which will enable communication with the LCD.
-
 
 ### New FPGA Functionality
 The new FPGA functionality intended to be used is decimation.
@@ -83,14 +81,11 @@ In short, decimation is a term in (digital) signal processing that describes the
 ### New Non-Trivial Hardware
 The two new, non-trivial pieces of hardware that will be used in this project are the Hoysond LCD module and the Adafruit PDM microphone.
 
-
 ### Riskiest Element
-The riskiest element of the project will likely be integrating the aforementioned microphone decimation involving CIC and FIR filters; at the moment, the team does not know anything about this, nor how to implement it, so it is hard to assess both the amount and difficulty of the workload before actually diving into it.
-Furthermore, the decimation will have to be done using the FPGA, which means that there is less library support in the case that any complicated software needs to be configured.
+The riskiest element of the project will likely be integrating the aforementioned PDM to PCM decimation on the FPGA, which involves CIC and FIR filters; at the moment, the team does not know anything about this, nor how to implement it, so it is hard to assess both the amount and difficulty of the workload before actually diving into it. It requires a decent amount of math and selectivity for it to function for our purposes, which we will be learning along the way. We will attempt to mitigate these risks by utilizing reference designs and validating incrementally on the FPGA.
 
 
 ## Technical Documentation
 ### Block Diagram
-
 
 ### Calculations of Critical Parameters
