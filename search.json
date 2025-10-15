@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "project_proposal.html",
+    "href": "project_proposal.html",
+    "title": "Project Proposal",
+    "section": "",
+    "text": "This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly. Additionally, once the song has finished, the project will grade the user’s performance — with both a numeric score and letter grade — based on how on-pitch they are."
+  },
+  {
+    "objectID": "project_proposal.html#project-overview",
+    "href": "project_proposal.html#project-overview",
+    "title": "Project Proposal",
+    "section": "",
+    "text": "This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly. Additionally, once the song has finished, the project will grade the user’s performance — with both a numeric score and letter grade — based on how on-pitch they are."
+  },
+  {
+    "objectID": "project_proposal.html#specifications",
+    "href": "project_proposal.html#specifications",
+    "title": "Project Proposal",
+    "section": "Specifications",
+    "text": "Specifications\n\nDesign allows the user to choose a song through external hardware\nDesign detects input notes between A3 and B5 (220 Hz to 1000 Hz)\nDesign scores the user’s singing by comparing detected and expected notes\nDisplays properly-timed notes/lyrics on an LCD\nLCD display does not flicker"
+  },
+  {
+    "objectID": "project_proposal.html#project-management",
+    "href": "project_proposal.html#project-management",
+    "title": "Project Proposal",
+    "section": "Project Management",
+    "text": "Project Management\n\nBill of Materials\n\n\n\n\n\n\nPart Name\nPart Number\nQuantity\nPrice\nLink\n\n\n\n\nAdafruit PDM MEMS Microphone Breakout\nMP34DT01-M\n1\n$11.23 ($4.95 part, $6.28 shipping and tax)\nAdafruit\n\n\nHosyond I2C 2004 LCD Module\nLCD2004\n1\n$26.32 ($16.99 part, $6.99 shipping, $2.34 estimated tax)\nAmazon\n\n\nTOTAL\n\n\n$37.55\n\n\n\n\n\n\nTable 1: Bill of materials\n\n\n\nNote that any additional, basic resources (such as resistors, capacitors, etc.) needed will be taken from either the Engineering Stockroom or Digital Lab for free.\n\n\nTimeline\n\n\n\n\n\n\n\n\n\n\n\n\nTask(s)\nDate\n\n\n\n\nProject proposal\nFinish project proposal\n10/16/25\n\n\n\nStart project\n10/30/25\n\n\n\nStudy PDM to PCM decimation\n11/6/25\n\n\nDesign review\nPrepare slides for design review\n11/7/25\n\n\n\nImplement new decimation FPGA functionality\n11/13/25\n\n\nMidpoint report and demo\nFinish midpoint report and prepare demo\n11/16/25\n\n\n\nDetect all input notes accurately with microphone\n11/20/25\n\n\n\nSynchronize LCD output notes/lyrics with song(s)\n11/27/25\n\n\n\nPolish off project’s final appearance\n12/3/25\n\n\nFinal checkoff\nFinish project completely\n12/5/25\n\n\nFinal report\nFinish final report\n12/7/25\n\n\nDemo day\n\n12/8/25\n\n\n\n\n\nTable 2: Rough timeline with key dates\n\n\n\n\n\nTask Delegation\n\n\n\n\n\n\n\n\n\n\nMayu\nQuinn\n\n\n\n\n\nStudy PDM to PCM decimation\n\n\nStudy PDM to PCM decimation\n\n\n\n\nStart FPGA code\n\n\nStart LCD code\nTranscribe song(s)\n\n\n\n\nCheck LCD code\n\n\nCheck FPGA code\n\n\n\n\nStudy FFT calculations and libraries\n\n\nStudy FFT calculations and libraries\n\n\n\n\nDecide on interrupts and timers for MCU\n\n\nDecide on interrupts and timers for MCU\n\n\n\n\nAssemble circuit\n\n\nCheck circuit\n\n\n\n\nWrite verification\n\n\nWrite verification\n\n\n\n\nDocument\n\n\nDocument\n\n\n\n\n\n\nTable 3: Task delegation"
+  },
+  {
+    "objectID": "project_proposal.html#design-details",
+    "href": "project_proposal.html#design-details",
+    "title": "Project Proposal",
+    "section": "Design Details",
+    "text": "Design Details\n\nNew MCU Functionality\n\n\nNew FPGA Functionality\n\n\nNon-Trivial New Hardware\n\n\nRiskiest Element\nThe riskiest element of the project will likely be integrating the aforementioned microphone decimation involving CIC and FIR filters; at the moment, the team does not know anything about this, nor how to implement it, so it is hard to assess both the amount and difficulty of the workload before actually diving into it. Furthermore, the decimation will have to be done using the FPGA, which means that there is less library support in the case that any complicated software needs to be configured."
+  },
+  {
+    "objectID": "project_proposal.html#technical-documentation",
+    "href": "project_proposal.html#technical-documentation",
+    "title": "Project Proposal",
+    "section": "Technical Documentation",
+    "text": "Technical Documentation\n\nBlock Diagram\n\n\nCalculations of Critical Parameters"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this website"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "E155 Karaoke Final Project",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  }
+]
