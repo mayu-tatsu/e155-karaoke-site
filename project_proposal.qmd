@@ -7,9 +7,9 @@ tbl-cap-location: bottom
 ## Project Overview
 This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly. Once the song has finished, the project will grade the user's performance — with both a numeric score and letter grade — based on how on-pitch they are.
 
-To be more specific, this will be done by sampling the user's singing with the FPGA and a microphone, during which the former will perform decimation (see the [New FPGA Functionality](#sec-new-fpga-functionality) section below for more details on this).
-Then, the FPGA will send this processed information to the MCU via SPI communication, so that it can further process such with FFT computations.
-Finally, the MCU will communicate with an LCD over I2C to display the corresponding lyrics of whatever song the user has chosen to sing.
+To be more specific, this will be done by sampling the user's singing with the FPGA and a MEMS PDM microphone, during which the former will perform decimation (see [New FPGA Functionality](#sec-new-fpga-functionality)) on the digital output of the mic, bringing the sample rate down to 16 kHz. 
+Then, the FPGA will send this processed information to the MCU via SPI communication, so that it can further process such with FFT computations. It will also handle the storage of expected and detected notes throughout each song.
+Finally, the MCU will communicate with an LCD over I2C to display the corresponding lyrics of whatever song the user has chosen to sing and display the final score of the user's performance.
 
 
 ## Specifications
@@ -99,7 +99,7 @@ The team will attempt to mitigate these risks by utilizing reference designs and
 The block diagram depicted in [Figure 1](#fig-block-diagram) provides a general outline of all protocols and interfaces that the project will comprise.
 
 ### Calculations of Critical Parameters
-#### PDM to PCM Decimation Parameters
+#### PDM to PCM Decimation Parameters (Filter Design)
 Page four of the [MP34DT01-M datasheet](https://cdn-learn.adafruit.com/assets/assets/000/049/977/original/MP34DT01-M.pdf) gives the following values:
 
 **Clock** (@ $Vdd=1.8V$, $T=25\degree C$) = 2.4 MHz (Min. 1 MHz, Max. 3.25 MHz)  
@@ -161,17 +161,43 @@ A_stop_db  = 10 * log10(A_stop_lin) = 59.5               # ~60 dB stop-band atte
 
 ```
 
+
 ##### LUT Usage
-Preliminary calculations are based on this blog, but will be tweaked later: [Design of a Multi-Stage PDM to PCM Decimation Pipeline](https://tomverbeure.github.io/2020/12/20/Design-of-a-Multi-Stage-PDM-to-PCM-Decimation-Pipeline.html)
+Preliminary order-of-magnitude calculations are based on this blog, but will be tweaked later: [Design of a Multi-Stage PDM to PCM Decimation Pipeline](https://tomverbeure.github.io/2020/12/20/Design-of-a-Multi-Stage-PDM-to-PCM-Decimation-Pipeline.html)
 
 Following the 144 decimation ratio, CIC can handle a maximum of 12x decimation (the bulk of decimation) with four stages and has 0.056 dB passband ripple and 125.8 dB stopband attenuation. The team will use two cascaded half-band filters: HB1 with 4x decimation and HB2 3x. Each roughly has a ~0.02 dB passband ripple and 89 dB attenuation. At the end, a generic FIR filter minimizes ripple by having a flat passband that counteracts the CIC passband droop (“compensation filter”). It also enforces stopband attenuation to a value higher than 60 dB (already achieved!), and as with the role of an FIR filter, it has 1x decimation.
 
-* iCE40UP: 5280 LUTs available
 * CIC Filter (12x in 4 stages): 
+    + Uses only adders and delays, no multipliers.
+    + Adders: 1 LUT per 4-5 adder bits, 20 adder bits * 4 stages = 20 LUTs
+        - 20 adder bits comes from = Input Bit Width + Stages * log_2(CIC Decimation Ratio) = $1+4*log_2(12) = 16$, adding 4 guard bits.
+    + Registers: 52 registers (FFs) where 1 FF = 1 LUT.
+        - Comes from 4 stages, each with 1 integrator and 12 combs = 52 LUTs.
+    + Overhead: 20% of preliminary cost = 15 LUTs
+    + Total: Roughly **90 LUTs**
 * Half-Band Filters:
+    + Uses multipliers but FPGA can optimize and conver them to shifters/adders since half of taps are zero & nonzero coefficients are usually multiples of 2.
     + HB1: 4x
+        - Converting taps to shift-adding is most efficient, but some might not always be possible. Worst case scenario, all taps will be via multiplication.
+        - Adders: 64 total taps --> 32 nonzero coefficients, where each shift/adder is around 5 LUTs = 160 LUTs
+        - Multiplication: Worst case all taps are required to use multiplication: we use 4 DSP blocks (out of 8) for HB1, 28 multiplications will need to be done via LUT. 15–18 bits × 15–18 bits multiplication (15-bit PCM word size, but give or take) requires roughly 50 LUTs --> 28*50=1400 LUTs
+        - Total: **1400 LUTs** at worst case
     + HB2: 3x
+        - Adders: 48 total taps --> 24 nonzero coefficients, where each shift/adder is around 5 LUTs = 120 LUTs
+        - Multiplication: Using the last 4 DSP blocks, 24-4=20 multipliers left --> 20*50=1000 LUTs
+        - Total: **1000 LUTs** at worst case
 * FIR Filter:
+    + All error calculations are met, so FIR can be made up of precise and small number of taps. Overall, the multiplication count will be small.
+    + Adding: Around 16-32 taps, where 2-4 LUTs per tap = 248 LUTs
+        - Less LUTs per tap becuase of lower sample rate after decimation
+    + Multiplication: No DSP blocks, 50 LUT per multiplication --> 50 * 32 = 1600 LUTs
+    + Overhead: 20% of preliminary cost = 300 LUTs
+    + Total: **1900 LUTs**
+* Overall Total: **4400 LUTs** out of iCE40UP5K's **5280 LUTs** available --> **83%**. 
+    + A little high, but this is considering worst case; in reality, we will be implementing shift-adding as first priority (rather than multiplication).
+    + Using all 8 DSP blocks provided by iCE40UP5K.
+    + We can decrease LUT usage by decreasing tap counts as long as our error margins allow it.
+    + We can allocate DSPs within Lattice Radiant to handle the largest or tightest coefficients instead and decrease LUT usage.
 
 #### FFT Parameters
 Sample Rate (from FPGA’s decimation) [$f_S$]: 16 kHz  
@@ -182,7 +208,7 @@ Frequency resolution per FFT bin:
 * $f_S / N$ = Sample Rate / FFT Size
 * The team is aiming for a range between 5-20 Hz/bin for musical range
 
-Time resolution / Frame duration:
+Time resolution (Frame duration):
 
 * $N / f_S$ = FFT Size / Sample Rate
 * 50-100 ms latency is slowest without human notification
