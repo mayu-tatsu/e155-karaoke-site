@@ -99,40 +99,39 @@ The team will attempt to mitigate these risks by utilizing reference designs and
 The block diagram depicted in [Figure 1](#fig-block-diagram) provides a general outline of all protocols and interfaces that the project will comprise.
 
 ### Calculations of Critical Parameters
-
 #### PDM to PCM Decimation Parameters
-Given values from [MP34DT01-M Datasheet](https://cdn-learn.adafruit.com/assets/assets/000/049/977/original/MP34DT01-M.pdf) pg. 4:
+Page four of the [MP34DT01-M datasheet](https://cdn-learn.adafruit.com/assets/assets/000/049/977/original/MP34DT01-M.pdf) gives the following values:
 
 **Clock** (@ $Vdd=1.8V$, $T=25\degree C$) = 2.4 MHz (Min. 1 MHz, Max. 3.25 MHz)  
 **AOP** (Acoustic Overload Point) = 120 dBSPL  
 **SNR** (Signal-to-Noise Ratio) = 61 dB  
-**Dynamic Range** = SNR + (AOP - 94 dbSPL) = 61 dB + (120 dbSPL - 94 dbSPL) = 87bB  
-- Assuming basically ~6dB per bit (realistically 6.2 per bit but rounding down), our design will need a **PCM word size** of at least **15 bits** to cover the full dynamic range of the microphone. ($87/6=14.5$, round up to 15 bits)
+**Dynamic Range** = SNR + (AOP - 94 dbSPL) = 61 dB + (120 dbSPL - 94 dbSPL) = 87 bB  
+- Assuming that there is ~6 dB per bit (realistically 6.2 per bit but rounding down), the design will need a **PCM word size** of at least **15 bits** to cover the full dynamic range of the microphone. ($87/6=14.5$, round up to 15 bits)
 
-Values decided upon:
+Thus, the values the team decided on are:
 
 **Output Sample Rate**: 16 kHz → **Bandwidth / Nyquist**: 8 kHz  
-- Most fundamental frequencies and harmonics of human singing fall below 8 kHz, and the Nyquist at 16 kHz comfortably covers this band.
-- Lower processing and memory cost compared to standard 48 kHz audio.  
+- Most fundamental frequencies and harmonics of human singing fall below 8 kHz, and setting the Nyquist value at 16 kHz comfortably covers this band.
+- This has a lower processing and memory cost compared to standard 48 kHz audio.  
 - FFT frequency bins and time resolution are balanced at this sample rate for pitch detection and scoring (see below!).  
 **PDM Sample Rate**: 2.304 MHz  
-- Based on Clock range: 1 - 3.25 MHz  
-- Power of 2: Important for decimation ratio --> multi-stage decimation.  
+- Based on clock range: 1 - 3.25 MHz  
+- Power of 2: Important for decimation ratio --> Multi-stage decimation.  
 **Decimation Ratio**: $2304 kHz / 16 kHz = 144$  
 
-![Frequency Response Diagram](images/mic-freq-response.png){#fig-freq-response width=70%}
+![Frequency response diagram](images/mic-freq-response.png){#fig-freq-response width=70%}
 
-Observing [Figure 2](#fig-freq-response), after 6 kHz, the frequency response starts becoming a lot more sensitive. Pass until then, and then start the transition band there. Beyond 10 kHz, the frequency response data isn't displayed, so assuming the worst, the stop band should start from there. 
+Observing the diagram provided in [Figure 2](#fig-freq-response) above, after 6 kHz, the frequency response starts becoming a lot more sensitive. It's a pass until then, and then the transition band starts from there. Beyond 10 kHz, the frequency response data isn't displayed, so assuming the worst case scenario, the stop band should start from there. 
 
 **Pass-band**: 0 - 6 kHz  
 **Stop Band**: 10 kHz  
 **SNR of Output Signal**: 80 dB  
-- Humans can’t tell beyond 70 dB  
-- Allowing for increased SNR deterioration (of around 7 dB from 87 dB), we can balance out the computational usage to quality required for a karaoke machine.  
-**Max. Ripple**: +/- 1dB  
+- Humans can’t detect signals beyond 70 dB.
+- Allowing for increased SNR deterioration (of around 7 dB from 87 dB), the team can balance out the computational usage to quality required for a karaoke machine.  
+**Max. Ripple**: +/- 1 dB  
 - Individual filters will need to have tighter specs than this overall maximum 1 dB ripple, so for less load, it’s relaxed compared to the high quality audio standard of 0.1 dB.  
 **Stop Band Attenuation** = 60 dB  
-- Worst-case assumption: PDM noise above 8 kHz (Nyquist) = −40 dB per 16 kHz band.
+- Worst-case assumption: PDM noise above 8 kHz (Nyquist) = −40 dB per 16 kHz band
 
 ```default
 # all Hz
@@ -162,13 +161,10 @@ A_stop_db  = 10 * log10(A_stop_lin) = 59.5               # ~60 dB stop-band atte
 
 ```
 
-
 ##### LUT Usage
+Preliminary calculations are based on this blog, but will be tweaked later: [Design of a Multi-Stage PDM to PCM Decimation Pipeline](https://tomverbeure.github.io/2020/12/20/Design-of-a-Multi-Stage-PDM-to-PCM-Decimation-Pipeline.html)
 
-Preliminary calculations based on this blog, to be tweaked later: [Design of a Multi-Stage PDM to PCM Decimation Pipeline](https://tomverbeure.github.io/2020/12/20/Design-of-a-Multi-Stage-PDM-to-PCM-Decimation-Pipeline.html)
-
-Following the 144 decimation ratio, CIC can handle max 12x decimation (bulk of decimation) with 4 stages and has 0.056 dB passband ripple and 125.8 dB stopband attenuation. Use 2 cascaded half-band filters: HB1 with 4x decimation, HB2 3x. Each roughly has ~0.02 dB passband ripple and 89 dB attenuation. At the end, a generic FIR filter minimizes ripple by having a flat passband that counteracts the CIC passband droop (“compensation filter”). It also enforces stopband attenuation to a value higher than 60 dB (already achieved!), and as with the role of an FIR filter has 1x decimation.
-
+Following the 144 decimation ratio, CIC can handle a maximum of 12x decimation (the bulk of decimation) with four stages and has 0.056 dB passband ripple and 125.8 dB stopband attenuation. The team will use two cascaded half-band filters: HB1 with 4x decimation and HB2 3x. Each roughly has a ~0.02 dB passband ripple and 89 dB attenuation. At the end, a generic FIR filter minimizes ripple by having a flat passband that counteracts the CIC passband droop (“compensation filter”). It also enforces stopband attenuation to a value higher than 60 dB (already achieved!), and as with the role of an FIR filter, it has 1x decimation.
 
 * iCE40UP: 5280 LUTs available
 * CIC Filter (12x in 4 stages): 
@@ -177,22 +173,19 @@ Following the 144 decimation ratio, CIC can handle max 12x decimation (bulk of d
     + HB2: 3x
 * FIR Filter:
 
-
 #### FFT Parameters
-
 Sample Rate (from FPGA’s decimation) [$f_S$]: 16 kHz  
 FFT Size [$N$]: 2048; balanced choice from [Table 4](#tbl-fft-sizes) below
 
 Frequency resolution per FFT bin: 
 
 * $f_S / N$ = Sample Rate / FFT Size
-* Aiming for a range between 5-20 Hz/bin for musical range
+* The team is aiming for a range between 5-20 Hz/bin for musical range
 
 Time resolution / Frame duration:
 
 * $N / f_S$ = FFT Size / Sample Rate
 * 50-100 ms latency is slowest without human notification
-
 
 | **FFT Size**        | **Frequency Resolution**     | **Time Resolution**            |
 |:-------------------:|:----------------------------:|:------------------------------:|
