@@ -124,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#design-details" id="toc-design-details" class="nav-link" data-scroll-target="#design-details">Design Details</a>
   <ul class="collapse">
   <li><a href="#new-mcu-functionality" id="toc-new-mcu-functionality" class="nav-link" data-scroll-target="#new-mcu-functionality">New MCU Functionality</a></li>
-  <li><a href="#new-fpga-functionality" id="toc-new-fpga-functionality" class="nav-link" data-scroll-target="#new-fpga-functionality">New FPGA Functionality</a></li>
+  <li><a href="#sec-new-fpga-functionality" id="toc-sec-new-fpga-functionality" class="nav-link" data-scroll-target="#sec-new-fpga-functionality">New FPGA Functionality</a></li>
   <li><a href="#new-non-trivial-hardware" id="toc-new-non-trivial-hardware" class="nav-link" data-scroll-target="#new-non-trivial-hardware">New Non-Trivial Hardware</a></li>
   <li><a href="#riskiest-element" id="toc-riskiest-element" class="nav-link" data-scroll-target="#riskiest-element">Riskiest Element</a></li>
   </ul></li>
@@ -161,6 +161,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="project-overview" class="level2">
 <h2 class="anchored" data-anchor-id="project-overview">Project Overview</h2>
 <p>This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly. Once the song has finished, the project will grade the user’s performance — with both a numeric score and letter grade — based on how on-pitch they are.</p>
+<p>To be more specific, this will be done by sampling the user’s singing with the FPGA and a microphone, during which the former will perform decimation (see the <a href="#sec-new-fpga-functionality">New FPGA Functionality</a> section below for more details on this). Then, the FPGA will send this processed information to the MCU via SPI communication, so that it can further process such with FFT computations. Finally, the MCU will communicate with an LCD over I2C to display the corresponding lyrics of whatever song the user has chosen to sing.</p>
 </section>
 <section id="specifications" class="level2">
 <h2 class="anchored" data-anchor-id="specifications">Specifications</h2>
@@ -186,7 +187,7 @@ ul.task-list li input[type="checkbox"] {
 <th style="text-align: center;"><strong>Part Number</strong></th>
 <th style="text-align: center;"><strong>Quantity</strong></th>
 <th style="text-align: center;"><strong>Price</strong></th>
-<th style="text-align: center;"><strong>Link</strong></th>
+<th style="text-align: center;"><strong>Vendor</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -199,12 +200,19 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td style="text-align: center;">Hosyond I2C 2004 LCD Module</td>
-<td style="text-align: center;">LCD2004</td>
+<td style="text-align: center;"><a href="https://dfimg.dfrobot.com/enshop/image/data/DFR0154/LCD2004%20hd44780%20Datasheet.pdf">HD44780U</a></td>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">$26.32 <em>($16.99 part, $6.99 shipping, $2.34 estimated tax)</em></td>
 <td style="text-align: center;"><a href="https://www.amazon.com/gp/product/B0C1G9GBRZ?th=1">Amazon</a></td>
 </tr>
 <tr class="odd">
+<td style="text-align: center;">Capacitor</td>
+<td style="text-align: center;">100nF Ceramic Capacitor</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$0</td>
+<td style="text-align: center;">Stockroom</td>
+</tr>
+<tr class="even">
 <td style="text-align: center;"><strong>TOTAL</strong></td>
 <td style="text-align: center;"></td>
 <td style="text-align: center;"></td>
@@ -219,7 +227,7 @@ Table&nbsp;1: Bill of materials
 </figcaption>
 </figure>
 </div>
-<p>Note that any additional, basic resources (such as resistors, capacitors, etc.) needed will be taken from either the Engineering Stockroom or Digital Lab at no cost.</p>
+<p>Note that if the team discovers that they need any additional, basic resources (such as resistors, capacitors, etc.) later on in the project, these will be taken from either the Engineering Stockroom or Digital Lab at no cost.</p>
 </section>
 <section id="timeline" class="level3">
 <h3 class="anchored" data-anchor-id="timeline">Timeline</h3>
@@ -408,8 +416,8 @@ Table&nbsp;3: Task delegation
 <h3 class="anchored" data-anchor-id="new-mcu-functionality">New MCU Functionality</h3>
 <p>The new MCU functionality intended to be used is the I2C interface peripheral, which will enable communication with the LCD.</p>
 </section>
-<section id="new-fpga-functionality" class="level3">
-<h3 class="anchored" data-anchor-id="new-fpga-functionality">New FPGA Functionality</h3>
+<section id="sec-new-fpga-functionality" class="level3">
+<h3 class="anchored" data-anchor-id="sec-new-fpga-functionality">New FPGA Functionality</h3>
 <p>The new FPGA functionality intended to be used is decimation. In short, decimation is a term in (digital) signal processing that describes the removal of samples so as to reduce the complexity of subsequent computations.</p>
 </section>
 <section id="new-non-trivial-hardware" class="level3">
@@ -428,13 +436,14 @@ Table&nbsp;3: Task delegation
 <div id="fig-block-diagram" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-block-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/project_proposal_block_diagram.jpg" id="fig-block-diagram" class="img-fluid figure-img">
+<img src="images/project_proposal_block_diagram.jpg" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-block-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-block-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Block diagram
 </figcaption>
 </figure>
 </div>
+<p>The block diagram depicted in <a href="#fig-block-diagram">Figure 1</a> provides a general outline of all protocols and interfaces that the project will comprise.</p>
 </section>
 <section id="calculations-of-critical-parameters" class="level3">
 <h3 class="anchored" data-anchor-id="calculations-of-critical-parameters">Calculations of Critical Parameters</h3>
