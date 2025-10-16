@@ -89,6 +89,6 @@ The team will attempt to mitigate these risks by utilizing reference designs and
 
 ## Technical Documentation
 ### Block Diagram
-
+![](images/project_proposal_block_diagram.jpg){#fig-block-diagram}
 
 ### Calculations of Critical Parameters
