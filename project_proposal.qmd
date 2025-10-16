@@ -7,6 +7,10 @@ tbl-cap-location: bottom
 ## Project Overview
 This project seeks to emulate a karaoke machine by allowing a user to select from a set list of songs and displaying appropriately-timed lyrics accordingly. Once the song has finished, the project will grade the user's performance — with both a numeric score and letter grade — based on how on-pitch they are.
 
+To be more specific, this will be done by sampling the user's singing with the FPGA and a microphone, during which the former will perform decimation (see the [New FPGA Functionality](#sec-new-fpga-functionality) section below for more details on this).
+Then, the FPGA will send this processed information to the MCU via SPI communication, so that it can further process such with FFT computations.
+Finally, the MCU will communicate with an LCD over I2C to display the corresponding lyrics of whatever song the user has chosen to sing.
+
 
 ## Specifications
 * Design allows the user to choose a song through external hardware
@@ -18,14 +22,15 @@ This project seeks to emulate a karaoke machine by allowing a user to select fro
 
 ## Project Management
 ### Bill of Materials
-| **Part Name**                         | **Part Number**                                               | **Quantity** | **Price**                                                   | **Link**                                                    |
-|:-------------------------------------:|:-------------------------------------------------------------:|:------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
-| Adafruit PDM MEMS Microphone Breakout | [MP34DT01-M](https://www.st.com/en/audio-ics/mp34dt01-m.html) | 1            | $11.23 *($4.95 part, $6.28 shipping + tax)*               | [Adafruit](https://www.adafruit.com/product/3492)           |
-| Hosyond I2C 2004 LCD Module           | LCD2004                                                       | 1            | $26.32 *($16.99 part, $6.99 shipping, $2.34 estimated tax)* | [Amazon](https://www.amazon.com/gp/product/B0C1G9GBRZ?th=1) |
-| **TOTAL**                             |                                                               |              | $37.55                                                      |                                                             |
+| **Part Name**                         | **Part Number**                                                                                   | **Quantity** | **Price**                                                   | **Vendor**                                                  |
+|:-------------------------------------:|:-------------------------------------------------------------------------------------------------:|:------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
+| Adafruit PDM MEMS Microphone Breakout | [MP34DT01-M](https://www.st.com/en/audio-ics/mp34dt01-m.html)                                     | 1            | $11.23 *($4.95 part, $6.28 shipping + tax)*                 | [Adafruit](https://www.adafruit.com/product/3492)           |
+| Hosyond I2C 2004 LCD Module           | [HD44780U](https://dfimg.dfrobot.com/enshop/image/data/DFR0154/LCD2004%20hd44780%20Datasheet.pdf) | 1            | $26.32 *($16.99 part, $6.99 shipping, $2.34 estimated tax)* | [Amazon](https://www.amazon.com/gp/product/B0C1G9GBRZ?th=1) |
+| Capacitor                             | 100nF Ceramic Capacitor                                                                           | 1            | $0                                                          | Stockroom                                                   |
+| **TOTAL**                             |                                                                                                   |              | $37.55                                                      |                                                             |
 : Bill of materials {#tbl-bom}
 
-Note that any additional, basic resources (such as resistors, capacitors, etc.) needed will be taken from either the Engineering Stockroom or Digital Lab at no cost.
+Note that if the team discovers that they need any additional, basic resources (such as resistors, capacitors, etc.) later on in the project, these will be taken from either the Engineering Stockroom or Digital Lab at no cost.
 
 ### Timeline
 |                            | **Task(s)**                                       | **Date** |
@@ -74,7 +79,7 @@ Overall, the team hopes to complete the vast majority of the project's tasks tog
 ### New MCU Functionality
 The new MCU functionality intended to be used is the I2C interface peripheral, which will enable communication with the LCD.
 
-### New FPGA Functionality
+### New FPGA Functionality {#sec-new-fpga-functionality}
 The new FPGA functionality intended to be used is decimation.
 In short, decimation is a term in (digital) signal processing that describes the removal of samples so as to reduce the complexity of subsequent computations.
 
@@ -89,6 +94,8 @@ The team will attempt to mitigate these risks by utilizing reference designs and
 
 ## Technical Documentation
 ### Block Diagram
+![Block diagram](images/project_proposal_block_diagram.jpg){#fig-block-diagram}
 
+The block diagram depicted in [Figure 1](#fig-block-diagram) provides a general outline of all protocols and interfaces that the project will comprise.
 
 ### Calculations of Critical Parameters
