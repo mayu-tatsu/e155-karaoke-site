@@ -16,6 +16,8 @@ Finally, the MCU will communicate with an LCD over I2C to display the correspond
 * Design allows the user to choose a song through external hardware
 * Design detects input notes between A3 and roughly B5 (220 Hz to 1000 Hz)
 * Design scores the user’s singing by comparing detected and expected notes
+* Design plays back the expected song through a speaker as reference
+* Design utilizes a pitch and delay media format (as seen in Fur Elise, Lab 4)
 * Displays properly-timed lyrics/notes on an LCD screen
 * LCD display does not flicker
 
@@ -77,7 +79,7 @@ Overall, the team hopes to complete the vast majority of the project's tasks tog
 
 ## Design Details
 ### New MCU Functionality
-The new MCU functionality intended to be used is the I2C interface peripheral, which will enable communication with the LCD.
+The new MCU functionality intended to be used is the DMA peripheral to onload buffered data for the PCM data coming in from the FPGA through SPI protocol.
 
 ### New FPGA Functionality {#sec-new-fpga-functionality}
 The new FPGA functionality intended to be used is decimation.
@@ -87,9 +89,7 @@ In short, decimation is a term in (digital) signal processing that describes the
 The two new, non-trivial pieces of hardware that will be used in this project are the Hoysond LCD module and the Adafruit PDM microphone.
 
 ### Riskiest Element
-The riskiest element of the project will likely be integrating the aforementioned PDM to PCM decimation on the FPGA, which involves CIC and FIR filters; at the moment, the team does not know anything about this, nor how to implement it, so it is hard to assess both the amount and difficulty of the workload before actually diving into it.
-It requires a decent amount of math and selectivity for it to function for the team's purposes, which they will be learning along the way. 
-The team will attempt to mitigate these risks by utilizing reference designs and validating incrementally on the FPGA.
+The riskiest element of the project will be the microphone. We are not sure how accurate it will be able to process sounds and output a solid PDM. It is also important to note that we will be demoing the design during a noisy lab room, so we are expecting difficulty in isolating the singing. We will attempt to mitigate the risks by implementing a sigma-delta modulator that we can control via switch.
 
 
 ## Technical Documentation
@@ -200,8 +200,8 @@ Following the 144 decimation ratio, CIC can handle a maximum of 12x decimation (
     + We can allocate DSPs within Lattice Radiant to handle the largest or tightest coefficients instead and decrease LUT usage.
 
 #### FFT Parameters
-Sample Rate (from FPGA’s decimation) [$f_S$]: 16 kHz  
-FFT Size [$N$]: 2048; balanced choice from [Table 4](#tbl-fft-sizes) below
+Sample Rate (from FPGA’s decimation) [$f_S$]: 16 kHz --> Bandwidth = 8 kHz  
+FFT Size [$N$]: 1024; balanced choice from [Table 4](#tbl-fft-sizes) below
 
 Frequency resolution per FFT bin: 
 
@@ -215,7 +215,7 @@ Time resolution (Frame duration):
 
 | **FFT Size**        | **Frequency Resolution**     | **Time Resolution**            |
 |:-------------------:|:----------------------------:|:------------------------------:|
-| 1024                | 15.625 Hz/bin                | 0.064 s = 64 ms                |
-| [2048]{.underline}  | [7.8125 Hz/bin]{.underline}  | [0.128 s = 128 ms]{.underline} |
-| 4096                | 3.90625 Hz/bin               | 0.256 s = 256 ms               |
+| 512                 | 15.625 Hz/bin                | 0.064 s = 64 ms                |
+| [1024]{.underline}  | [7.8125 Hz/bin]{.underline}  | [0.128 s = 128 ms]{.underline} |
+| 2048                | 3.90625 Hz/bin               | 0.256 s = 256 ms               |
 : FFT Size Options {#tbl-fft-sizes}
