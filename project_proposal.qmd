@@ -40,12 +40,11 @@ Note that if the team discovers that they need any additional, basic resources (
 | *Project proposal*         | Finish project proposal                           | 10/16/25 |
 |                            | Start project                                     | 10/30/25 |
 |                            | Study PDM to PCM decimation                       | 11/6/25  |
-| *Design review*            | Prepare slides for design review                  | 11/7/25  |
-|                            | Implement new decimation FPGA functionality       | 11/13/25 |
+|                            | Implement new decimation FPGA functionality       | 11/7/25  |
+|                            | Detect all input notes accurately with microphone | 11/13/25 |
 | *Midpoint report and demo* | Finish midpoint report and prepare demo           | 11/16/25 |
-|                            | Detect all input notes accurately with microphone | 11/20/25 |
-|                            | Synchronize LCD output notes/lyrics with song(s)  | 11/27/25 |
-|                            | Polish off project's final appearance             | 12/3/25  |
+|                            | Synchronize LCD output notes/lyrics with song(s)  | 11/20/25 |
+|                            | Polish off project's final appearance             | 11/27/25 |
 | *Final checkoff*           | Finish project completely                         | 12/5/25  |
 | *Final report*             | Finish final report                               | 12/7/25  |
 | *Demo day*                 |                                                   | 12/8/25  |
