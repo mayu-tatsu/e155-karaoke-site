@@ -233,6 +233,8 @@ window.Quarto = {
 <li>Design allows the user to choose a song through external hardware</li>
 <li>Design detects input notes between A3 and roughly B5 (220 Hz to 1000 Hz)</li>
 <li>Design scores the user’s singing by comparing detected and expected notes</li>
+<li>Design plays back the expected song through a speaker as reference</li>
+<li>Design utilizes a pitch and delay media format (as seen in Fur Elise, Lab 4)</li>
 <li>Displays properly-timed lyrics/notes on an LCD screen</li>
 <li>LCD display does not flicker</li>
 </ul>
@@ -328,46 +330,41 @@ Table&nbsp;1: Bill of materials
 <td style="text-align: center;">11/6/25</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><em>Design review</em></td>
-<td style="text-align: center;">Prepare slides for design review</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Implement new decimation FPGA functionality</td>
 <td style="text-align: center;">11/7/25</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"></td>
-<td style="text-align: center;">Implement new decimation FPGA functionality</td>
-<td style="text-align: center;">11/13/25</td>
+<td style="text-align: center;">Detect all input notes accurately with microphone</td>
+<td style="text-align: center;">11/16/25</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><em>Midpoint report and demo</em></td>
 <td style="text-align: center;">Finish midpoint report and prepare demo</td>
-<td style="text-align: center;">11/16/25</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"></td>
-<td style="text-align: center;">Detect all input notes accurately with microphone</td>
 <td style="text-align: center;">11/20/25</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: center;"></td>
 <td style="text-align: center;">Synchronize LCD output notes/lyrics with song(s)</td>
 <td style="text-align: center;">11/27/25</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: center;"></td>
 <td style="text-align: center;">Polish off project’s final appearance</td>
 <td style="text-align: center;">12/3/25</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: center;"><em>Final checkoff</em></td>
 <td style="text-align: center;">Finish project completely</td>
 <td style="text-align: center;">12/5/25</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: center;"><em>Final report</em></td>
 <td style="text-align: center;">Finish final report</td>
 <td style="text-align: center;">12/7/25</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: center;"><em>Demo day</em></td>
 <td style="text-align: center;"></td>
 <td style="text-align: center;">12/8/25</td>
@@ -478,7 +475,7 @@ Table&nbsp;3: Task delegation
 <h2 class="anchored" data-anchor-id="design-details">Design Details</h2>
 <section id="new-mcu-functionality" class="level3">
 <h3 class="anchored" data-anchor-id="new-mcu-functionality">New MCU Functionality</h3>
-<p>The new MCU functionality intended to be used is the I2C interface peripheral, which will enable communication with the LCD.</p>
+<p>The new MCU functionality intended to be used is the DMA peripheral to onload buffered data for the PCM data coming in from the FPGA through SPI protocol.</p>
 </section>
 <section id="sec-new-fpga-functionality" class="level3">
 <h3 class="anchored" data-anchor-id="sec-new-fpga-functionality">New FPGA Functionality</h3>
@@ -490,7 +487,7 @@ Table&nbsp;3: Task delegation
 </section>
 <section id="riskiest-element" class="level3">
 <h3 class="anchored" data-anchor-id="riskiest-element">Riskiest Element</h3>
-<p>The riskiest element of the project will likely be integrating the aforementioned PDM to PCM decimation on the FPGA, which involves CIC and FIR filters; at the moment, the team does not know anything about this, nor how to implement it, so it is hard to assess both the amount and difficulty of the workload before actually diving into it. It requires a decent amount of math and selectivity for it to function for the team’s purposes, which they will be learning along the way. The team will attempt to mitigate these risks by utilizing reference designs and validating incrementally on the FPGA.</p>
+<p>The riskiest element of the project will be the microphone. We are not sure how accurate it will be able to process sounds and output a solid PDM. It is also important to note that we will be demoing the design during a noisy lab room, so we are expecting difficulty in isolating the singing. We will attempt to mitigate the risks by implementing a sigma-delta modulator that we can control via switch.</p>
 </section>
 </section>
 <section id="technical-documentation" class="level2">
@@ -629,8 +626,8 @@ Figure&nbsp;2: Frequency response diagram
 </section>
 <section id="fft-parameters" class="level4">
 <h4 class="anchored" data-anchor-id="fft-parameters">FFT Parameters</h4>
-<p>Sample Rate (from FPGA’s decimation) [<span class="math inline">\(f_S\)</span>]: 16 kHz<br>
-FFT Size [<span class="math inline">\(N\)</span>]: 2048; balanced choice from <a href="#tbl-fft-sizes">Table 4</a> below</p>
+<p>Sample Rate (from FPGA’s decimation) [<span class="math inline">\(f_S\)</span>]: 16 kHz –&gt; Bandwidth = 8 kHz<br>
+FFT Size [<span class="math inline">\(N\)</span>]: 1024; balanced choice from <a href="#tbl-fft-sizes">Table 4</a> below</p>
 <p>Frequency resolution per FFT bin:</p>
 <ul>
 <li><span class="math inline">\(f_S / N\)</span> = Sample Rate / FFT Size</li>
@@ -659,17 +656,17 @@ FFT Size [<span class="math inline">\(N\)</span>]: 2048; balanced choice from <a
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">1024</td>
+<td style="text-align: center;">512</td>
 <td style="text-align: center;">15.625 Hz/bin</td>
 <td style="text-align: center;">0.064 s = 64 ms</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;"><u>2048</u></td>
+<td style="text-align: center;"><u>1024</u></td>
 <td style="text-align: center;"><u>7.8125 Hz/bin</u></td>
 <td style="text-align: center;"><u>0.128 s = 128 ms</u></td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">4096</td>
+<td style="text-align: center;">2048</td>
 <td style="text-align: center;">3.90625 Hz/bin</td>
 <td style="text-align: center;">0.256 s = 256 ms</td>
 </tr>
