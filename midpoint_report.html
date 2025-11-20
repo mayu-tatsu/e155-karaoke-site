@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>E155 Karaoke Final Project</title>
+<title>Midpoint Report – E155 Karaoke Final Project</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,6 +34,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
@@ -89,7 +90,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
@@ -97,7 +98,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Project Proposal</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./midpoint_report.html"> 
+    <a class="nav-link active" href="./midpoint_report.html" aria-current="page"> 
 <span class="menu-text">Midpoint Report</span></a>
   </li>  
 </ul>
@@ -114,35 +115,197 @@ ul.task-list li input[type="checkbox"] {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
+   
   <ul>
-  <li><a href="#about-the-team" id="toc-about-the-team" class="nav-link active" data-scroll-target="#about-the-team">About the Team</a></li>
+  <li><a href="#current-status" id="toc-current-status" class="nav-link active" data-scroll-target="#current-status">Current Status</a></li>
+  <li><a href="#midpoint-specifications" id="toc-midpoint-specifications" class="nav-link" data-scroll-target="#midpoint-specifications">Midpoint Specifications</a>
+  <ul class="collapse">
+  <li><a href="#proficiency" id="toc-proficiency" class="nav-link" data-scroll-target="#proficiency">Proficiency</a></li>
+  <li><a href="#excellence" id="toc-excellence" class="nav-link" data-scroll-target="#excellence">Excellence</a></li>
+  </ul></li>
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a>
+  <ul class="collapse">
+  <li><a href="#block-diagram" id="toc-block-diagram" class="nav-link" data-scroll-target="#block-diagram">Block Diagram</a></li>
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  <li><a href="#sec-flowchart" id="toc-sec-flowchart" class="nav-link" data-scroll-target="#sec-flowchart">Flowchart</a></li>
+  </ul></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a>
+  <ul class="collapse">
+  <li><a href="#sec-testbench-simulation" id="toc-sec-testbench-simulation" class="nav-link" data-scroll-target="#sec-testbench-simulation">Testbench Simulation</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<div class="quarto-about-jolla">
-  <img src="images/headshot.png" class="about-image
-  round " style="height: 15em; width: 15em;">
- <header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">E155 Karaoke Final Project</h1>
-</div>
-<div class="quarto-title-meta">
-  </div>
-</header><main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
-<section id="about-the-team" class="level2">
-<h2 data-anchor-id="about-the-team">About the Team</h2>
-<p>Quinn Miyamoto <em>(left)</em> is a junior engineering major at Harvey Mudd College. More specifically, she is interested in digital electronics and mechanical design. So far, she has completed courses pertaining to computer architecture, electricity and magnetism, and system-on-chip design. She has a Level Two CAD certification in Rhino, and works as a Makerspace steward for Harvey Mudd College, with a certification to teach users welding. When she is not working, you can find her reading manga/manhwa, binging bad Netflix shows, gaming, or rock-climbing.</p>
-<p>Mayu Tatsumi <em>(right)</em> is a junior studying Engineering at Harvey Mudd College. She is interested in working in the camera and lighting industries and would like to become involved as an electrical engineer. She has prior experience working as a Systems Control intern specifically working on embedded systems and writing C firmware on the NXP i.MX8M processor. Outside of engineering, she is interested in movie &amp; TV production, Formula 1, and gaming.</p>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Midpoint Report</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="current-status" class="level2">
+<h2 class="anchored" data-anchor-id="current-status">Current Status</h2>
+<p>As of this project’s midpoint checkoff (11/20/25), the microphone is somewhat functional and sends audio samples to the FPGA board as desired. The FPGA then performs decimation on the signal by applying one CIC filter, one half-band filter, and one FIR filter, in that order. The CIC filter first decimates the 1.536 MHz PCM input by a factor of 12 through 4 stages to output a 64 kHz 16-bit PCM. The 4 initial integrator blocks accumulate the PDM stream while the decimator takes one out of 12 values. The 4 combs then compute successive differences between delayed samples, which means that they effectively undo the integrator buildup and restore a band-limited approximation of the original signal at the lower sample rate. The half-band filter is a fancy and more efficient FIR filter, using the properties of specific coefficients to halve the number of multiplications and make it more resource-efficient. The coefficients for the half-band were found by specifying a desired passband of 3950 Hz and stopband of 7900 Hz, along with a set decimation ratio of 2 (as half-bands are hardcoded to have) and number of taps, and passed all those parameters into the <code>remez</code> Python function. Essentially, we used this half-band filter to lower the resource strain and still decimate by 2 so we went from a 16-bit 64 kHz PCM to a 32 kHz 16-bit PCM. The FIR filter coefficients were found by calculating the passband ripple and stopband attenuation that results from the first CIC and halfband filters, and specifying the targeted values (around +- 3dB ripple and 60 dB attenuation at least). The FIR filter also had a decimation ratio of 2 to bring down the final frequency to 16 kHz (with a Nyquist of 8 kHz) that maintains all signals required ot distinguish tones during singing. All filters have a one-cycle output pulse that is asserted when there is a new valid value available. This is passed in to the SPI module, along with the final 16-bit and 16 kHz decimated PCM values, to be sent to the MCU.</p>
+<p>This process of figuring out the coefficients was extremely difficult due to differences between what we had planned and what was possible. We had originally planned for a 144 decimation ratio starting from a 2.304 MHz PDM rate, with 2 halfbands (x4, x3) in between the CIC (x12) and compensation FIR filter (x1). However, we were not aware that halfbands were only as efficient as they are when they are at x2 decimation. Then, given the limited resources on the FPGA and the slowly mounting number of LUTs as we implemented the filters, we came to the decision that only a single halfband (x2) filter would be possible. Our final plan was the 12x, 4-stage CIC filter, than a single halfband (x2) filter, and the final compensation FIR filter that also decimated by 2. Every single iteration of this pipeline required re-calculating feasible coefficients for the halfbands and FIRs, which took effort and learning of a new section of the matplotlib library in Python. It also took a while implementing a pipeline on the halfband and FIR filters, along with shift-adding to reduce multiplication and, in extension, resource usage.</p>
+<p>As the FPGA sends these values to the MCU over SPI, where it proceeds to first apply Z-Score normalization with the intent of maintaining amplitude measurement accuracy; it is also adjusted to account for the CIC filter gain. Note that the MCU is configured in such a way that the SPI transactions automatically send data directly to a buffer in memory via the DMA peripheral, so as to reduce the amount of processing that the core itself needs to do. Next, a Hanning window is used to reduce the signal’s spectral leakage, after which it utilizes the ARM math library functions to actually apply the FFT and take the magnitude of the resulting frequencies. From this, the dominant frequency is found and subsequently output as a note (ex. A3, B4, C5, etc.) in Segger’s Debug terminal. Additionally, while this is all occurring, a data-transfer-complete flag and an FFT-complete flag are constantly being set and reset, so that the program knows when it can start the next round of computations. (See the <a href="#sec-flowchart">Flowchart</a> section below for more specific details about the MCU’s general routine and functions.)</p>
+<p>From here on out, the team will need to get the LCD and speaker(s) working and properly interfaced with the current system, such that various songs and their lyrics can be played and displayed, respectively. There will also need to be some sort of song-selection mechanism integrated into the process. Moreover, the team has a few timing/latency concerns — regarding the delay between input audio signals and their processed outputs, in particular, as displayed in the <a href="#sec-testbench-simulation">verification waveforms</a> below — that will need to be addressed. However, because the riskiest element of the project has already been successfully implemented, completing the rest of these tasks should not be as big of a problem.</p>
+</section>
+<section id="midpoint-specifications" class="level2">
+<h2 class="anchored" data-anchor-id="midpoint-specifications">Midpoint Specifications</h2>
+<section id="proficiency" class="level3">
+<h3 class="anchored" data-anchor-id="proficiency">Proficiency</h3>
+<ul>
+<li>Clear and concise written summary of current status</li>
+<li>Schematics of all breadboarded circuits</li>
+<li>Block diagram of system components and the interfaces between them</li>
+<li>Hardware demo functioning (potentially with some minor bugs)</li>
+<li>More than 25% of the way to the final deliverable</li>
+<li>Clear description of microcontroller routines</li>
+<li>All external parts ordered
+<ul>
+<li>PDM microphone</li>
+<li>LCD</li>
+</ul></li>
+</ul>
+</section>
+<section id="excellence" class="level3">
+<h3 class="anchored" data-anchor-id="excellence">Excellence</h3>
+<ul>
+<li>All interfaces in the block diagram defined (e.g., SPI, I2C, GPIO)</li>
+<li>Hardware demo functioning well</li>
+<li>Writing is well organized</li>
+<li>Solid grammar or spelling issues (no more than a few minor errors which do not detract from the point).</li>
+<li>Completed riskiest element of the project
+<ul>
+<li>FPGA implements all three filters to perform decimation appropriately</li>
+<li>Microphone interfaces with the FPGA and MCU</li>
+</ul></li>
+<li>More than 50% of the way to the final deliverable</li>
+</ul>
+</section>
+</section>
+<section id="technical-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="technical-documentation">Technical Documentation</h2>
+<p>The source code for this project can be found in the associated <a href="https://github.com/mayu-tatsu/e155-karaoke/tree/main">GitHub repository</a>.</p>
+<section id="block-diagram" class="level3">
+<h3 class="anchored" data-anchor-id="block-diagram">Block Diagram</h3>
+<div id="fig-midpoint-block-diagram" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-midpoint-block-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_block_diagram.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-midpoint-block-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Block diagram
+</figcaption>
+</figure>
+</div>
+<p>The block diagram in <a href="#fig-midpoint-block-diagram">Figure 1</a> depicts the general architecture implied by the SystemVerilog code.</p>
+</section>
+<section id="schematic" class="level3">
+<h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
+<div id="fig-midpoint-schematic" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-midpoint-schematic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_schematic.jpg" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-midpoint-schematic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Schematic
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-midpoint-schematic">Figure 2</a> above depicts all of the components comprising the breadboarded circuit at the time of the midpoint checkoff. This includes the PDM microphone, FPGA, and MCU; note that while the connections between the FPGA and MCU did not need to be explicitly outlined, as they are both on-board elements of the PCB that are hooked up internally, these were shown for the sake of clarity, especially regarding the SPI transactions. Overall, the microphone and FPGA interfacing was done in accordance with the <a href="https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf">MP34DT01-M datasheet</a>. The most prominent feature of note is the tying of the LR port to ground, as that configures a DOUT signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.</p>
+</section>
+<section id="sec-flowchart" class="level3">
+<h3 class="anchored" data-anchor-id="sec-flowchart">Flowchart</h3>
+<div id="fig-midpoint-flowchart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-midpoint-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_flowchart.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-midpoint-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Flowchart
+</figcaption>
+</figure>
+</div>
+<p>The <a href="#fig-midpoint-flowchart">Figure 3</a> flowchart provides a detailed overview of the microcontroller’s most significant routines.</p>
+<p>First and foremost, the <em>main</em> loop’s primary jobs are to 1) configure the MCU and all of its relevant peripherals, 2) continuously apply an FFT to the detected audio samples — which are, again, transmitted to the controller via SPI — in order to determine the dominant frequencies, and 3) output the corresponding note. This notably requires the help of two custom functions, <em>frequency_determiner</em> and <em>note_determiner</em>. The former makes use of the ARM math library to actually perform the FFT calculations (with some pre-processing work done to ensure greater accuracy and resolution), after which an <em>fft_calculations_complete</em> flag is set. Meanwhile, the latter comprises what is essentially a look-up table to output the dominant frequency as a note that is in human-readable terms. Finally, the <em>DMA1_Channel2_IRQHandler</em> deals with any interrupts that trigger as a result of the SPI-to-DMA-transfer-complete flag being set. More specifically, it waits until the <em>fft_calculations_complete</em> flag is high to copy the contents of the SPI data register (i.e.&nbsp;whatever audio sample the FPGA is sending over at the time) to a second buffer, named <em>input_signal</em>, for <em>frequency_determiner</em> to subsequently process; then, it resets the <em>fft_calculations_complete</em> so that the process may begin anew.</p>
+</section>
+</section>
+<section id="verification" class="level2">
+<h2 class="anchored" data-anchor-id="verification">Verification</h2>
+<p>Various means of verification were used to ensure the project’s accuracy, including the following simulation waveforms, as well as actual experimentation with the hardware itself.</p>
+<section id="sec-testbench-simulation" class="level3">
+<h3 class="anchored" data-anchor-id="sec-testbench-simulation">Testbench Simulation</h3>
+<div id="fig-cic-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cic-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_cic_tb_waves.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cic-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: CIC Filter Testbench
+</figcaption>
+</figure>
+</div>
+<div id="fig-hb-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_hb_tb_waves.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Halfband Filter Testbench
+</figcaption>
+</figure>
+</div>
+<div id="fig-fir-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_fir_tb_waves.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: FIR Filter Testbench
+</figcaption>
+</figure>
+</div>
+<div id="fig-top-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-top-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_top_tb_waves.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-top-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Top Level Testbench
+</figcaption>
+</figure>
+</div>
 
 
 </section>
-</main>  
-</div>
- <!-- /main -->
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     
