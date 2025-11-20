@@ -47,7 +47,7 @@ However, because the riskiest element of the project has already been successful
 The source code for this project can be found in the associated [GitHub repository](https://github.com/mayu-tatsu/e155-karaoke/tree/main).
 
 ### Block Diagram
-![Block diagram](images/){#fig-midpoint-block-diagram}
+![Block diagram](images/midpoint_block_diagram.jpg){#fig-midpoint-block-diagram}
 
 The block diagram in [Figure 1](#fig-midpoint-block-diagram) depicts the general architecture implied by the SystemVerilog code.
 ........................................... **[BRIEFLY EXPLAIN EACH MODULE/SUBMODULE]**
