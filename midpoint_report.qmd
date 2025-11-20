@@ -1,0 +1,67 @@
+---
+title: "Midpoint Report"
+---
+
+## Current Status
+As of the midpoint checkoff (11/20/25), .............
+
+
+## Midpoint Specifications
+### Proficiency
+* Clear and concise written summary of current status
+* Schematics of all breadboarded circuits
+* Block diagram of system components and the interfaces between them
+* Hardware demo functioning (potentially with some minor bugs)
+* More than 25% of the way to the final deliverable
+* Clear description of microcontroller routines
+* All external parts ordered
+    * PDM microphone
+    * LCD
+
+### Excellence
+* All interfaces in the block diagram defined (e.g., SPI, I2C, GPIO)
+* Hardware demo functioning well
+* Writing is well organized
+* Solid grammar or spelling issues (no more than a few minor errors which do not detract from the point).
+* Completed riskiest element of the project
+    * Microphone interfaces properly with the FPGA and MCU
+    * Project detects notes accurately
+* More than 50% of the way to the final deliverable
+
+
+## Technical Documentation
+The source code for this project can be found in the associated [GitHub repository](https://github.com/mayu-tatsu/e155-karaoke/tree/main).
+
+### Block Diagram
+![Block diagram](images/){#fig-midpoint-block-diagram}
+
+
+
+### Schematic
+![Schematic](images/midpoint_schematic.jpg){#fig-midpoint-schematic width=80%}
+
+[Figure 2](#fig-midpoint-schematic) above depicts all of the components comprising the breadboarded circuit at the time of the midpoint checkoff.
+This includes the PDM microphone, FPGA, and MCU; note that while the connections between the FPGA and MCU did not need to be explicitly outlined, as they are both on-board elements of the PCB that are hooked up internally, these were shown for the sake of clarity, especially regarding the SPI transactions.
+Overall, the microphone and FPGA interfacing was done in accordance with the [MP34DT01-M datasheet]().
+The most __ feature to note is the fact that the LR port has been tied to ground, as __.
+
+### Flowchart
+![Flowchart](images/midpoint_flowchart.jpg){#fig-midpoint-flowchart}
+
+The [Figure 3](#fig-midpoint-flowchart) flowchart provides a detailed overview of the microcontroller's most significant routines.
+
+First and foremost, the *main* loop's primary jobs are to 1) configure the MCU and all of its relevant peripherals, 2) continuously apply an FFT to the detected audio samples — which are, again, transmitted to the controller via SPI — in order to determine the dominant frequencies, and 3) output the corresponding note.
+This notably requires the help of two custom functions, *frequency_determiner* and *note_determiner*.
+The former makes use of the ARM math library to actually perform the FFT calculations (with some pre-processing work done to ensure greater accuracy and resolution), after which an *fft_calculations_complete* flag is set.
+Meanwhile, the latter comprises what is essentially a look-up table to output the dominant frequency as a note that is in human-readable terms.
+Finally, the *DMA1_Channel2_IRQHandler* deals with any interrupts that trigger as a result of the SPI-to-DMA-transfer-complete flag being set.
+More specifically, it waits until the *fft_calculations_complete* flag is high to copy the contents of the SPI data register (i.e. whatever audio sample the FPGA is sending over at the time) to a second buffer, named *input_signal*, for *frequency_determiner* to subsequently process; then, it resets the *fft_calculations_complete* so that the process may begin anew.
+
+
+## Verification
+Various means of verification were used to ensure the project's accuracy, including the following simulation waveforms and oscilloscope traces, as well as actual experimentation with the hardware itself.
+
+### Testbench Simulation
+
+
+### Oscilloscope Traces
