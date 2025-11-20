@@ -3,7 +3,7 @@ title: "Midpoint Report"
 ---
 
 ## Current Status
-As of this project's midpoint checkoff (11/20/25), the microphone is fully functional and sends audio samples to the FPGA board as desired.
+As of this project's midpoint checkoff (11/20/25), the microphone is somewhat functional and sends audio samples to the FPGA board as desired.
 The FPGA then performs decimation on the signal by applying one CIC filter, one half-band filter, and one FIR filter, in that order.
 The CIC filter first decimates the 1.536 MHz PCM input by a factor of 12 through 4 stages to output a 64 kHz 16-bit PCM. The 4 initial integrator blocks accumulate the PDM stream while the decimator takes one out of 12 values. The 4 combs then compute successive differences between delayed samples, which means that they effectively undo the integrator buildup and restore a band-limited approximation of the original signal at the lower sample rate. 
 The half-band filter is a fancy and more efficient FIR filter, using the properties of specific coefficients to halve the number of multiplications and make it more resource-efficient. The coefficients for the half-band were found by specifying a desired passband of 3950 Hz and stopband of 7900 Hz, along with a set decimation ratio of 2 (as half-bands are hardcoded to have) and number of taps, and passed all those parameters into the `remez` Python function. Essentially, we used this half-band filter to lower the resource strain and still decimate by 2 so we went from a 16-bit 64 kHz PCM to a 32 kHz 16-bit PCM.
@@ -41,8 +41,8 @@ However, because the riskiest element of the project has already been successful
 * Writing is well organized
 * Solid grammar or spelling issues (no more than a few minor errors which do not detract from the point).
 * Completed riskiest element of the project
-    * Microphone interfaces properly with the FPGA and MCU
-    * Project detects notes accurately
+    * FPGA implements all three filters to perform decimation appropriately
+    * Microphone interfaces with the FPGA and MCU
 * More than 50% of the way to the final deliverable
 
 
