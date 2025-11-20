@@ -9,6 +9,8 @@ website:
         text: Home
       - href: project_proposal.qmd
         text: Project Proposal
+      - href: midpoint_report.qmd
+        text: Midpoint Report
 
 format:
   html:
@@ -17,6 +19,3 @@ format:
       - brand
     css: styles.css
     toc: true
-
-
-
