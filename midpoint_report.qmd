@@ -5,9 +5,12 @@ title: "Midpoint Report"
 ## Current Status
 As of this project's midpoint checkoff (11/20/25), the microphone is fully functional and sends audio samples to the FPGA board as desired.
 The FPGA then performs decimation on the signal by applying one CIC filter, one half-band filter, and one FIR filter, in that order.
-More specifically, ........................................... **[TALK ABOUT WHAT EACH FILTER DOES]**
+The CIC filter first decimates the 1.536 MHz PCM input by a factor of 12 through 4 stages to output a 64 kHz 16-bit PCM. The 4 initial integrator blocks accumulate the PDM stream while the decimator takes one out of 12 values. The 4 combs then compute successive differences between delayed samples, which means that they effectively undo the integrator buildup and restore a band-limited approximation of the original signal at the lower sample rate. 
+The half-band filter is a fancy and more efficient FIR filter, using the properties of specific coefficients to halve the number of multiplications and make it more resource-efficient. The coefficients for the half-band were found by specifying a desired passband of 3950 Hz and stopband of 7900 Hz, along with a set decimation ratio of 2 (as half-bands are hardcoded to have) and number of taps, and passed all those parameters into the `remez` Python function. Essentially, we used this half-band filter to lower the resource strain and still decimate by 2 so we went from a 16-bit 64 kHz PCM to a 32 kHz 16-bit PCM.
+The FIR filter coefficients were found by calculating the passband ripple and stopband attenuation that results from the first CIC and halfband filters, and specifying the targeted values. The FIR filter also had a decimation ratio of 2 to bring down the final frequency to 16 kHz (with a Nyquist of 8 kHz) that maintains all signals required ot distinguish tones during singing.
+All filters have a one-cycle output pulse that is asserted when there is a new valid value available. This is passed in to the SPI module, along with the final 16-bit and 16 kHz decimated PCM values, to be sent to the MCU.
 
-Then, the FPGA sends the newly processed signal to the MCU over SPI, where it proceeds to first apply Z-Score normalization with the intent of maintaining amplitude measurement accuracy; it is also adjusted to account for the CIC filter gain.
+As the FPGA sends these values to the MCU over SPI, where it proceeds to first apply Z-Score normalization with the intent of maintaining amplitude measurement accuracy; it is also adjusted to account for the CIC filter gain.
 Note that the MCU is configured in such a way that the SPI transactions automatically send data directly to a buffer in memory via the DMA peripheral, so as to reduce the amount of processing that the core itself needs to do.
 Next, a Hanning window is used to reduce the signal's spectral leakage, after which it utilizes the ARM math library functions to actually apply the FFT and take the magnitude of the resulting frequencies.
 From this, the dominant frequency is found and subsequently output as a note (ex. A3, B4, C5, etc.) in Segger's Debug terminal.
@@ -50,7 +53,6 @@ The source code for this project can be found in the associated [GitHub reposito
 ![Block diagram](images/midpoint_block_diagram.jpg){#fig-midpoint-block-diagram}
 
 The block diagram in [Figure 1](#fig-midpoint-block-diagram) depicts the general architecture implied by the SystemVerilog code.
-........................................... **[BRIEFLY EXPLAIN EACH MODULE/SUBMODULE]**
 
 ### Schematic
 ![Schematic](images/midpoint_schematic.jpg){#fig-midpoint-schematic width=80%}
