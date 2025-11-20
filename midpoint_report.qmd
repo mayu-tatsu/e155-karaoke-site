@@ -3,7 +3,21 @@ title: "Midpoint Report"
 ---
 
 ## Current Status
-As of the midpoint checkoff (11/20/25), .............
+As of this project's midpoint checkoff (11/20/25), the microphone is fully functional and sends audio samples to the FPGA board as desired.
+The FPGA then performs decimation on the signal by applying one CIC filter, one half-band filter, and one FIR filter, in that order.
+More specifically, ........................................... **[TALK ABOUT WHAT EACH FILTER DOES]**
+
+Then, the FPGA sends the newly processed signal to the MCU over SPI, where it proceeds to first apply Z-Score normalization with the intent of maintaining amplitude measurement accuracy; it is also adjusted to account for the CIC filter gain.
+Note that the MCU is configured in such a way that the SPI transactions automatically send data directly to a buffer in memory via the DMA peripheral, so as to reduce the amount of processing that the core itself needs to do.
+Next, a Hanning window is used to reduce the signal's spectral leakage, after which it utilizes the ARM math library functions to actually apply the FFT and take the magnitude of the resulting frequencies.
+From this, the dominant frequency is found and subsequently output as a note (ex. A3, B4, C5, etc.) in Segger's Debug terminal.
+Additionally, while this is all occurring, a data-transfer-complete flag and an FFT-complete flag are constantly being set and reset, so that the program knows when it can start the next round of computations.
+(See the [Flowchart](#sec-flowchart) section below for more specific details about the MCU's general routine and functions.)
+
+From here on out, the team will need to get the LCD and speaker(s) working and properly interfaced with the current system, such that various songs and their lyrics can be played and displayed, respectively.
+There will also need to be some sort of song-selection mechanism integrated into the process.
+Moreover, the team has a few timing/latency concerns — regarding the delay between input audio signals and their processed outputs, in particular, as displayed in the [verification waveforms](#sec-testbench-simulation) below — that will need to be addressed.
+However, because the riskiest element of the project has already been successfully implemented, completing the rest of these tasks should not be as big of a problem.
 
 
 ## Midpoint Specifications
@@ -35,17 +49,18 @@ The source code for this project can be found in the associated [GitHub reposito
 ### Block Diagram
 ![Block diagram](images/){#fig-midpoint-block-diagram}
 
-
+The block diagram in [Figure 1](#fig-midpoint-block-diagram) depicts the general architecture implied by the SystemVerilog code.
+........................................... **[BRIEFLY EXPLAIN EACH MODULE/SUBMODULE]**
 
 ### Schematic
 ![Schematic](images/midpoint_schematic.jpg){#fig-midpoint-schematic width=80%}
 
 [Figure 2](#fig-midpoint-schematic) above depicts all of the components comprising the breadboarded circuit at the time of the midpoint checkoff.
 This includes the PDM microphone, FPGA, and MCU; note that while the connections between the FPGA and MCU did not need to be explicitly outlined, as they are both on-board elements of the PCB that are hooked up internally, these were shown for the sake of clarity, especially regarding the SPI transactions.
-Overall, the microphone and FPGA interfacing was done in accordance with the [MP34DT01-M datasheet]().
-The most __ feature to note is the fact that the LR port has been tied to ground, as __.
+Overall, the microphone and FPGA interfacing was done in accordance with the [MP34DT01-M datasheet](https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf).
+The most prominent feature of note is the tying of the LR port to ground, as that configures a DOUT signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.
 
-### Flowchart
+### Flowchart {#sec-flowchart}
 ![Flowchart](images/midpoint_flowchart.jpg){#fig-midpoint-flowchart}
 
 The [Figure 3](#fig-midpoint-flowchart) flowchart provides a detailed overview of the microcontroller's most significant routines.
@@ -61,7 +76,7 @@ More specifically, it waits until the *fft_calculations_complete* flag is high t
 ## Verification
 Various means of verification were used to ensure the project's accuracy, including the following simulation waveforms and oscilloscope traces, as well as actual experimentation with the hardware itself.
 
-### Testbench Simulation
+### Testbench Simulation {#sec-testbench-simulation}
 
 
 ### Oscilloscope Traces
