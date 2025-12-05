@@ -2,15 +2,44 @@
 title: "Final Report"
 ---
 
-## Overview
+## Project Overview
+SUMMARY
+Names and short bios of team members with link to personal website or LinkedIn profile.
+Abstract which briefly describes the main purpose and operation of the system.
 
+All project code (software and HDL) included in Git repository
+Git repository contains a README.md file to describe the main elements of the project and where they are found.
 
 
 ## Project Specifications
-* 
+* Design allows the user to choose a song through external hardware
+* Design detects input frequencies between 300 to 2000 Hz
+* Design scores the user’s singing by comparing detected and expected notes
+* Design plays back the expected song through a speaker as reference
+* Design utilizes a pitch and delay media format (as seen in Lab 4)
+* Displays properly-timed lyrics on an LCD screen
+* LCD display does not flicker
 
-### Additional Specifications
-* 
+
+## Bill of Materials
+| **Part Name**                         | **Part Number**                                                                                   | **Quantity** | **Price**                                                   | **Vendor**                                                  |
+|:-------------------------------------:|:-------------------------------------------------------------------------------------------------:|:------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------:|
+| Adafruit PDM MEMS Microphone Breakout | [MP34DT01-M](https://www.st.com/en/audio-ics/mp34dt01-m.html)                                     | 1            | $11.23 *($4.95 part, $6.28 shipping + tax)*                 | [Adafruit](https://www.adafruit.com/product/3492)           |
+| Hosyond I2C 2004 LCD Module           | [HD44780U](https://dfimg.dfrobot.com/enshop/image/data/DFR0154/LCD2004%20hd44780%20Datasheet.pdf) | 1            | $26.32 *($16.99 part, $6.99 shipping, $2.34 estimated tax)* | [Amazon](https://www.amazon.com/gp/product/B0C1G9GBRZ?th=1) |
+| **TOTAL**                             |                                                                                                   |              | $37.55                                                      |                                                             |
+: Bill of materials {#tbl-bom}
+
+
+## Design Details
+### FPGA Design Overview
+what is the FPGA doing along with main design features.
+
+### MCU Design Overview
+description of what the MCU is doing.
+
+### New Non-Trivial Hardware
+New hardware listed in section with description
+New hardware described with notes about the features to be implemented and how they go beyond the previous material covered in the course.
 
 
 ## Technical Documentation
@@ -49,3 +78,19 @@ Various means of verification were used to ensure the project's accuracy, includ
 
 
 ### Oscilloscope Traces
+
+
+## Results
+Results: What are the main results of your project.
+Results section clearly and quantitatively outlines the key performance aspects of the design with commentary to explain the design decisions.
+
+Short video showcasing a demonstration of the project
+Photos documenting final design
+
+
+## References
+References: Citation (and hyperlinks where relevant) to any outside resources that were referenced in the design of the project.
+References are formatted with a clean and consistent format.
+
+
+## Acknowledgements

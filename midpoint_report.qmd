@@ -73,12 +73,3 @@ The former makes use of the ARM math library to actually perform the FFT calcula
 Meanwhile, the latter comprises what is essentially a look-up table to output the dominant frequency as a note that is in human-readable terms.
 Finally, the *DMA1_Channel2_IRQHandler* deals with any interrupts that trigger as a result of the SPI-to-DMA-transfer-complete flag being set.
 More specifically, it waits until the *fft_calculations_complete* flag is high to copy the contents of the SPI data register (i.e. whatever audio sample the FPGA is sending over at the time) to a second buffer, named *input_signal*, for *frequency_determiner* to subsequently process; then, it resets the *fft_calculations_complete* so that the process may begin anew.
-
-
-## Verification
-Various means of verification were used to ensure the project's accuracy, including the following simulation waveforms and oscilloscope traces, as well as actual experimentation with the hardware itself.
-
-### Testbench Simulation {#sec-testbench-simulation}
-
-
-### Oscilloscope Traces
