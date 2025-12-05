@@ -31,6 +31,9 @@ Git repository contains a README.md file to describe the main elements of the pr
 
 
 ## Design Details
+
+![Design Overview](images/final_overview_diagram.jpg){#fig-final-overview-diagram}
+
 ### FPGA Design Overview
 what is the FPGA doing along with main design features.
 
