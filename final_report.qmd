@@ -1,0 +1,51 @@
+---
+title: "Final Report"
+---
+
+## Overview
+
+
+
+## Project Specifications
+* 
+
+### Additional Specifications
+* 
+
+
+## Technical Documentation
+The source code for this project can be found in the associated [GitHub repository]().
+
+### Block Diagram
+![Block diagram](){#fig-final-block-diagram}
+
+The block diagram in [Figure 1](#fig-final-block-diagram) depicts the general architecture implied by the SystemVerilog code.
+
+### Schematic
+![Schematic](){#fig-final-schematic width=80%}
+
+[Figure 2](#fig-final-schematic) above depicts 
+
+Overall, the microphone and FPGA interfacing was done in accordance with the [MP34DT01-M datasheet](https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf).
+The most prominent feature of note is the tying of the LR port to ground, as that configures a DOUT signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.
+
+### Flowchart {#sec-flowchart}
+![Flowchart](){#fig-final-flowchart}
+
+The [Figure 3](#fig-final-flowchart) flowchart provides a detailed overview of the microcontroller's most significant routines.
+
+First and foremost, the *main* loop's primary jobs are to 1) configure the MCU and all of its relevant peripherals, 2) continuously apply an FFT to the detected audio samples — which are, again, transmitted to the controller via SPI — in order to determine the dominant frequencies, and 3) output the corresponding note.
+This notably requires the help of two custom functions, *frequency_determiner* and *note_determiner*.
+The former makes use of the ARM math library to actually perform the FFT calculations (with some pre-processing work done to ensure greater accuracy and resolution), after which an *fft_calculations_complete* flag is set.
+Meanwhile, the latter comprises what is essentially a look-up table to output the dominant frequency as a note that is in human-readable terms.
+Finally, the *DMA1_Channel2_IRQHandler* deals with any interrupts that trigger as a result of the SPI-to-DMA-transfer-complete flag being set.
+More specifically, it waits until the *fft_calculations_complete* flag is high to copy the contents of the SPI data register (i.e. whatever audio sample the FPGA is sending over at the time) to a second buffer, named *input_signal*, for *frequency_determiner* to subsequently process; then, it resets the *fft_calculations_complete* so that the process may begin anew.
+
+
+## Verification
+Various means of verification were used to ensure the project's accuracy, including the following simulation waveforms and oscilloscope traces, as well as actual experimentation with the hardware itself.
+
+### Testbench Simulation {#sec-testbench-simulation}
+
+
+### Oscilloscope Traces

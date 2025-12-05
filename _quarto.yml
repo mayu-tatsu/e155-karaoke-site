@@ -11,6 +11,8 @@ website:
         text: Project Proposal
       - href: midpoint_report.qmd
         text: Midpoint Report
+      - href: final_report.qmd
+        text: Final Report
 
 format:
   html:
