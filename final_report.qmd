@@ -106,7 +106,20 @@ Some difficulties we encountered:
 ### MCU Design Overview
 [TO-DO!]
 
-Our MCU serves as the primary driver for everything in this project that isn't the microphone.
+Our MCU serves as the primary driver for everything in this project that isn't our microphone.
+
+#### SPI
+First and foremost, its SPI peripheral is set up in Receive-Only mode and 
+
+
+#### DMA
+
+
+#### Timers
+
+#### FFT
+
+#### LCD
 
 
 ## Technical Documentation
@@ -180,12 +193,24 @@ Demo video
 ![Team on Demo Day](images/demo_day_team.jpg){#fig-demo-day-team}
 
 ## References
-[TO-DO!]
-
-References: Citation (and hyperlinks where relevant) to any outside resources that were referenced in the design of the project.
-References are formatted with a clean and consistent format.
-
-[LCD's HD44780 controller chip datasheet](https://www.handsontec.com/dataspecs/I2C_2004_LCD.pdf)
+[E155](https://hmc-e155.github.io/): Course website.
+[STM32L432KC Datasheet](https://hmc-e155.github.io/assets/doc/ds11451-stm32l432kc.pdf): STM32 MCU datasheet.
+[STM32L432KC Reference Manual](https://hmc-e155.github.io/assets/doc/rm0394-stm32l41xxx42xxx43xxx44xxx45xxx46xxx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf): STM32 MCU reference manual.
+[Quinn Miyamoto's E155 Portfolio](https://qmiyamoto.github.io/E155-Portfolio/): Team member Quinn Miyamoto's portfolio of this course's labs.
+[Fix That Note! E155 Final Project Portfolio](https://jacksonphilion.github.io/final-project-portfolio/): Past E155 portfolio for the Fix That Note! project, which involved telling a user what note their system was detecting.
+[An Intuitive Look at Moving Average and CIC Filters](https://tomverbeure.github.io/2020/09/30/Moving-Average-and-CIC-Filters.html): A series of blogs made by Tom Verbeure on designing a pipeline for audio decimation and filtering
+[FIR Halfband Filter Design](https://www.mathworks.com/help/dsp/ug/fir-halfband-filter-design.html): A MATLAB guide to designing half-band filters, used in conjunction with the DSP-Related article below.
+[Simplest Calculation of Half-band Filter Coefficients](https://www.dsprelated.com/showarticle/1113.php): An online guide to designing half-band filter coefficients.
+[jaycordaro/half-band-filter](https://github.com/jaycordaro/half-band-filter): An implementation of a half-band FIR filter, from MATLAB to fixed point in SystemVerilog.
+[MEMS audio sensor omnidirectional digital microphone](https://cdn-learn.adafruit.com/assets/assets/000/049/977/original/MP34DT01-M.pdf): Datasheet for MP34DT01-M.
+[Interface 16×2 LCD with STM32 (No I2C) — 4-bit Guide](https://controllerstech.com/interface-lcd-16x2-with-stm32-without-i2c/): A guide to interfacing an LCD with an STM32 MCU with an 11-line parallel bus, instead of I2C.
+[STM32 LCD 16×2 Library & Example | LCD Display Interfacing](https://deepbluembedded.com/stm32-lcd-16x2-tutorial-library-alphanumeric-lcd-16x2-interfacing/): A guide to initializing and writing to an LCD using an STM32 MCU.
+[I2C Serial Interface 20x4 LCD Module](https://www.handsontec.com/dataspecs/I2C_2004_LCD.pdf): Datasheet for the LCD's HD44780 controller chip.
+[MC21605A6W-FPTLW](https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/3477/MC21605A6W-FPTLW.pdf): Alternative LCD datasheet.
+[Generating signals with STM32L4 timer, DMA and DAC](https://m0agx.eu/generating-signals-with-stm32l4-timer-dma-and-dac.html): A guide to interfacing DMA with SPI.
+[Fast Fourier Transform using the ARM CMSIS Library within the STM32 MCUs](https://youtu.be/Z3_YsXXgWzw?si=PaWCxyRoxPfmdG3T): A video tutorial on how to pick a dominant frequency out of a given signal on the STM32 MCU, using ARM math functions (including the FFT).
+[Normalizing Signals for Enhanced Analysis and Interpretation](https://thetechylife.com/how-do-you-normalize-a-signal/): A guide to normalizing signals as preparation for Fourier Transforms.
+[STMicroelectronics/cmsis-core](https://github.com/STMicroelectronics/cmsis-core/tree/10c319e2ed1a53a382f43a99eaa2b7b03d5b3489/DSP/Source): GitHub repository of all ARM math functions.
 
 
 ## Acknowledgements
