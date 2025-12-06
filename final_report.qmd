@@ -115,14 +115,14 @@ The source code for this project can be found in the associated [GitHub reposito
 ### Block Diagram
 ![Block diagram](images/final_block_diagram.png){#fig-final-block-diagram}
 
-The block diagram in [Figure 2](#fig-final-block-diagram) depicts the general architecture implied by the SystemVerilog code.
+The block diagram in [Figure 4](#fig-final-block-diagram) depicts the general architecture implied by the SystemVerilog code.
 
 [TO-DO!]
 
 ### Schematic {#sec-schematic}
 ![Schematic](images/final_schematic.png){#fig-final-schematic}
 
-[Figure 3](#fig-final-schematic) above depicts 
+[Figure 5](#fig-final-schematic) above depicts 
 
 [TO-DO!]
 
@@ -134,7 +134,7 @@ The most prominent feature of note is the tying of the LR port to ground, as tha
 
 ![Flowchart](){#fig-final-flowchart}
 
-The [Figure 4](#fig-final-flowchart) flowchart provides a detailed overview of the microcontroller's most significant routines.
+The [Figure 6](#fig-final-flowchart) flowchart provides a detailed overview of the microcontroller's most significant routines.
 
 
 ## Verification
@@ -189,5 +189,6 @@ References are formatted with a clean and consistent format.
 
 
 ## Acknowledgements
-We would like to thank the entire MicroPs teaching team for their help in getting this project off of the ground this semester, especially Kavi Dey ('26) and Prof. Spencer.
+We would like to thank the entire MicroPs teaching team for their help in getting this project off of the ground this semester, especially [Kavi Dey](https://www.linkedin.com/in/kavidey/) ('26) and Prof. Spencer.
+Additionally, special thanks goes out to [Cole Plepel](https://www.linkedin.com/in/cole-plepel/) ('27) for transcribing our karaoke machine's music.
 We really appreciate you!
