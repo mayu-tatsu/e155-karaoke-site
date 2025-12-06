@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>E155 Karaoke Final Project</title>
+<title>Final Report – E155 Karaoke Final Project</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,6 +34,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
@@ -89,11 +90,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./final_report.html"> 
+    <a class="nav-link active" href="./final_report.html" aria-current="page"> 
 <span class="menu-text">Final Report</span></a>
   </li>  
 </ul>
@@ -110,35 +111,282 @@ ul.task-list li input[type="checkbox"] {
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
+   
   <ul>
-  <li><a href="#about-the-team" id="toc-about-the-team" class="nav-link active" data-scroll-target="#about-the-team">About the Team</a></li>
+  <li><a href="#project-overview" id="toc-project-overview" class="nav-link active" data-scroll-target="#project-overview">Project Overview</a></li>
+  <li><a href="#project-specifications" id="toc-project-specifications" class="nav-link" data-scroll-target="#project-specifications">Project Specifications</a></li>
+  <li><a href="#bill-of-materials" id="toc-bill-of-materials" class="nav-link" data-scroll-target="#bill-of-materials">Bill of Materials</a></li>
+  <li><a href="#design-details" id="toc-design-details" class="nav-link" data-scroll-target="#design-details">Design Details</a>
+  <ul class="collapse">
+  <li><a href="#fpga-design-overview" id="toc-fpga-design-overview" class="nav-link" data-scroll-target="#fpga-design-overview">FPGA Design Overview</a></li>
+  <li><a href="#mcu-design-overview" id="toc-mcu-design-overview" class="nav-link" data-scroll-target="#mcu-design-overview">MCU Design Overview</a></li>
+  <li><a href="#new-non-trivial-hardware" id="toc-new-non-trivial-hardware" class="nav-link" data-scroll-target="#new-non-trivial-hardware">New Non-Trivial Hardware</a></li>
+  </ul></li>
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a>
+  <ul class="collapse">
+  <li><a href="#block-diagram" id="toc-block-diagram" class="nav-link" data-scroll-target="#block-diagram">Block Diagram</a></li>
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  <li><a href="#sec-flowchart" id="toc-sec-flowchart" class="nav-link" data-scroll-target="#sec-flowchart">Flowchart</a></li>
+  </ul></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a>
+  <ul class="collapse">
+  <li><a href="#sec-testbench-simulation" id="toc-sec-testbench-simulation" class="nav-link" data-scroll-target="#sec-testbench-simulation">Testbench Simulation</a></li>
+  <li><a href="#oscilloscope-traces" id="toc-oscilloscope-traces" class="nav-link" data-scroll-target="#oscilloscope-traces">Oscilloscope Traces</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<div class="quarto-about-jolla">
-  <img src="images/headshot.png" class="about-image
-  round " style="height: 15em; width: 15em;">
- <header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">E155 Karaoke Final Project</h1>
-</div>
-<div class="quarto-title-meta">
-  </div>
-</header><main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
-<section id="about-the-team" class="level2">
-<h2 data-anchor-id="about-the-team">About the Team</h2>
-<p>Quinn Miyamoto <em>(left)</em> is a junior engineering major at Harvey Mudd College. More specifically, she is interested in digital electronics and mechanical design. So far, she has completed courses pertaining to computer architecture, electricity and magnetism, and system-on-chip design. She has a Level Two CAD certification in Rhino, and works as a Makerspace steward for Harvey Mudd College, with a certification to teach users welding. When she is not working, you can find her reading manga/manhwa, binging bad Netflix shows, gaming, or rock-climbing.</p>
-<p>Mayu Tatsumi <em>(right)</em> is a junior studying Engineering at Harvey Mudd College. She is interested in working in the camera and lighting industries and would like to become involved as an electrical engineer. She has prior experience working as a Systems Control intern specifically working on embedded systems and writing C firmware on the NXP i.MX8M processor. Outside of engineering, she is interested in movie &amp; TV production, Formula 1, and gaming.</p>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Final Report</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="project-overview" class="level2">
+<h2 class="anchored" data-anchor-id="project-overview">Project Overview</h2>
+<p>This E155 final project sought to create a karaoke machine. The design allows users to choose a song to sing, displaying lyrics and playing the song as a guide via speaker, and ultimately compares the user’s singing to the expected frequencies, displaying both a letter grade and a percent error (between received and expected frequencies) after a song finishes. The main input is a MEMS digital microphone, which goes through digital signal processing and FFT to pick up the correct frequencies at which people speak into the microphone. The LCD screen functions as the principal user interface, directing users to choose songs, displaying lyrics, and presenting grades.</p>
+</section>
+<section id="project-specifications" class="level2">
+<h2 class="anchored" data-anchor-id="project-specifications">Project Specifications</h2>
+<ul>
+<li>Design allows the user to choose a song through external hardware</li>
+<li>Design detects input frequencies between 300 to 2000 Hz</li>
+<li>Design scores the user’s singing by comparing detected and expected notes</li>
+<li>Design plays back the expected song through a speaker as reference</li>
+<li>Design utilizes a pitch and delay media format (as seen in Lab 4)</li>
+<li>Displays properly-timed lyrics on an LCD screen</li>
+<li>LCD display does not flicker</li>
+</ul>
+</section>
+<section id="bill-of-materials" class="level2">
+<h2 class="anchored" data-anchor-id="bill-of-materials">Bill of Materials</h2>
+<div id="tbl-bom" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Bill of materials
+</figcaption>
+<div aria-describedby="tbl-bom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><strong>Part Name</strong></th>
+<th style="text-align: center;"><strong>Part Number</strong></th>
+<th style="text-align: center;"><strong>Quantity</strong></th>
+<th style="text-align: center;"><strong>Price</strong></th>
+<th style="text-align: center;"><strong>Vendor</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Adafruit PDM MEMS Microphone Breakout</td>
+<td style="text-align: center;"><a href="https://www.st.com/en/audio-ics/mp34dt01-m.html">MP34DT01-M</a></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$11.23 <em>($4.95 part, $6.28 shipping + tax)</em></td>
+<td style="text-align: center;"><a href="https://www.adafruit.com/product/3492">Adafruit</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Hosyond I2C 2004 LCD Module</td>
+<td style="text-align: center;"><a href="https://dfimg.dfrobot.com/enshop/image/data/DFR0154/LCD2004%20hd44780%20Datasheet.pdf">HD44780U</a></td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">$26.32 <em>($16.99 part, $6.99 shipping, $2.34 estimated tax)</em></td>
+<td style="text-align: center;"><a href="https://www.amazon.com/gp/product/B0C1G9GBRZ?th=1">Amazon</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>TOTAL</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">$37.55</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</section>
+<section id="design-details" class="level2">
+<h2 class="anchored" data-anchor-id="design-details">Design Details</h2>
+<p>The general, high-level overview of our project — with all of the protocols used explicitly outlined — can be viewed in <a href="#fpga-design-overview">Figure 1</a> below:</p>
+<div id="fig-final-overview-diagram" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-final-overview-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/final_overview_diagram.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-overview-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Design overview
+</figcaption>
+</figure>
+</div>
+<section id="fpga-design-overview" class="level3">
+<h3 class="anchored" data-anchor-id="fpga-design-overview">FPGA Design Overview</h3>
+<p>Our microphone is a MP34DT01-M, a MEMS digital microphone. We drive this using a 1.536 MHz clock signal generated by the FPGA, and the microphone outputs a PDM, which is then fed into the FPGA. The top module is karaoke_top.sv, as found in fpga/src. The FPGA feeds the PDM signal through a pipeline of 3 digital audio filters: a CIC filter (cic.sv), Half-Band filter (hb.sv), and FIR filter (fir.sv).</p>
+<p>These filters were used to create a decimation ratio of 96, downsampling the 1.536 MHz PDM output down to a 16 kHz output. The CIC takes the brunt of the decimation with a 24 decimation ratio in 4 stages, converts the PDM to a PCM, and normalizes the output values between -1 to 1. The Half-Band and FIR filters create a passband from 0 to 4000 Hz, with a stopband at around 8000 Hz. Both filters have a decimation ratio of 2, and their coefficients were determined using matplotlib functions.</p>
+<p>The three filters generate a 16-bit, 16 kHz PCM output, with a new sample indicated by a pulse. These signals are fed into the SPI module (spi.sv), which generates a CS, SCK, and SDO, acting as the controller in this case. All relevant testbenches are found in “fpga/testbench” and the ModelSim project is found in “fpga/work” in our <a href="https://github.com/mayu-tatsu/e155-karaoke">GitHub repository</a> (as also mentioned below). The MCU then receives these values, acting as the peripheral, and accumulates them using the SPI peripheral, paired with the DMA peripheral.</p>
+<p>Some difficulties we encountered: - Finding the correct filter pipeline design and the coefficients - Minimizing resource usage - Figuring out new SPI configuration and implementing it - Synthesizing and flashing the executable</p>
+</section>
+<section id="mcu-design-overview" class="level3">
+<h3 class="anchored" data-anchor-id="mcu-design-overview">MCU Design Overview</h3>
+<p>As for the MCU, one of the biggest problems was getting the LCD to consistently display the desired letters. More specifically, although the original plan was to use I2C to communicate between the two devices, it was discovered that there was a bit-expander attached to the bottom of the LCD that we had to go through first in order to actually write to our peripheral. However, because the data sheet for such a chip was so vague and therefore hard to understand, we decided to simply bypass it and send information to the data pins in parallel, instead. In total, there are eight data pins, as well as Read Select, Read/Write, and Enable pins. Thus, with the GPIO pins that were already being used for SPI, there were just barely enough pins on the breakout board (that we were actually able to use, at least) for our intended path forward.</p>
+<p>Unfortunately, there was still one key issue remaining: When we did this, some of the pins would display voltages of 1.5 V, as opposed to the ~3.3 V we expected. Because the characters being written on the LCD (along with the addresses being written to) are all completely dependent on the voltage levels they receive—with different high and low voltage patterns corresponding to different characters—this was obviously not good. More specifically, the minimum threshold for a voltage to be considered high by the LCD is 2.2 V, whereas the maximum threshold for a voltage to be considered low is 0.6 V; seeing as some pins had voltages floating between these two values, the LCD would randomly pick one to count it as and output the wrong thing accordingly. Ultimately, we found out that the root cause of this was the existence of two 0 ohm resistors connecting some of the MCU GPIO pins together. Thankfully, we were able to desolder these and subsequently use all of the pins as we initially intended.</p>
+</section>
+<section id="new-non-trivial-hardware" class="level3">
+<h3 class="anchored" data-anchor-id="new-non-trivial-hardware">New Non-Trivial Hardware</h3>
+<p>New hardware listed in section with description New hardware described with notes about the features to be implemented and how they go beyond the previous material covered in the course.</p>
+<p>The two new, non-trivial pieces of hardware that are used in this project are the Hoysond LCD module and the Adafruit PDM microphone.</p>
+</section>
+</section>
+<section id="technical-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="technical-documentation">Technical Documentation</h2>
+<p>The source code for this project can be found in the associated <a href="https://github.com/mayu-tatsu/e155-karaoke">GitHub repository</a>.</p>
+<section id="block-diagram" class="level3">
+<h3 class="anchored" data-anchor-id="block-diagram">Block Diagram</h3>
+<div id="fig-final-block-diagram" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-final-block-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/final_block_diagram.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-block-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Block diagram
+</figcaption>
+</figure>
+</div>
+<p>The block diagram in <a href="#fig-final-block-diagram">Figure 2</a> depicts the general architecture implied by the SystemVerilog code.</p>
+</section>
+<section id="schematic" class="level3">
+<h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
+<div id="fig-final-schematic" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-final-schematic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/final_schematic.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-schematic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Schematic
+</figcaption>
+</figure>
+</div>
+<p><a href="#fig-final-schematic">Figure 3</a> above depicts</p>
+<p>Overall, the microphone and FPGA interfacing was done in accordance with the <a href="https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf">MP34DT01-M datasheet</a>. The most prominent feature of note is the tying of the LR port to ground, as that configures a DOUT signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.</p>
+</section>
+<section id="sec-flowchart" class="level3">
+<h3 class="anchored" data-anchor-id="sec-flowchart">Flowchart</h3>
+<div id="fig-final-flowchart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-final-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src=".png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Flowchart
+</figcaption>
+</figure>
+</div>
+<p>The <a href="#fig-final-flowchart">Figure 4</a> flowchart provides a detailed overview of the microcontroller’s most significant routines.</p>
+</section>
+</section>
+<section id="verification" class="level2">
+<h2 class="anchored" data-anchor-id="verification">Verification</h2>
+<p>Various means of verification were used to ensure the project’s accuracy, including the following simulation waveforms and oscilloscope traces, as well as actual experimentation with the hardware itself.</p>
+<section id="sec-testbench-simulation" class="level3">
+<h3 class="anchored" data-anchor-id="sec-testbench-simulation">Testbench Simulation</h3>
+<div id="fig-cic-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cic-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_cic_tb_waves.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cic-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: CIC filter testbench
+</figcaption>
+</figure>
+</div>
+<div id="fig-hb-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_hb_tb_waves.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Halfband filter testbench
+</figcaption>
+</figure>
+</div>
+<div id="fig-fir-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_fir_tb_waves.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: FIR filter testbench
+</figcaption>
+</figure>
+</div>
+<div id="fig-top-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-top-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/midpoint_top_tb_waves.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-top-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Top Level testbench
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="oscilloscope-traces" class="level3">
+<h3 class="anchored" data-anchor-id="oscilloscope-traces">Oscilloscope Traces</h3>
+<div id="fig-lcd-logic-analyzer" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lcd-logic-analyzer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/lcd_logic_analyzer.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lcd-logic-analyzer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: LCD Logic Analyzer traces
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>Results: What are the main results of your project. Results section clearly and quantitatively outlines the key performance aspects of the design with commentary to explain the design decisions.</p>
+<p>Short video showcasing a demonstration of the project Photos documenting final design</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<p>References: Citation (and hyperlinks where relevant) to any outside resources that were referenced in the design of the project. References are formatted with a clean and consistent format.</p>
+</section>
+<section id="acknowledgements" class="level2">
+<h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
+<p>We would like to thank the entire MicroPs teaching team for their help in getting this project off of the ground this semester, especially Kavi Dey (’26) and Prof.&nbsp;Spencer. We really appreciate you!</p>
 
 
 </section>
-</main>  
-</div>
- <!-- /main -->
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     
