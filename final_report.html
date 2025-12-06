@@ -118,14 +118,14 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#bill-of-materials" id="toc-bill-of-materials" class="nav-link" data-scroll-target="#bill-of-materials">Bill of Materials</a></li>
   <li><a href="#design-details" id="toc-design-details" class="nav-link" data-scroll-target="#design-details">Design Details</a>
   <ul class="collapse">
+  <li><a href="#new-non-trivial-hardware" id="toc-new-non-trivial-hardware" class="nav-link" data-scroll-target="#new-non-trivial-hardware">New Non-Trivial Hardware</a></li>
   <li><a href="#fpga-design-overview" id="toc-fpga-design-overview" class="nav-link" data-scroll-target="#fpga-design-overview">FPGA Design Overview</a></li>
   <li><a href="#mcu-design-overview" id="toc-mcu-design-overview" class="nav-link" data-scroll-target="#mcu-design-overview">MCU Design Overview</a></li>
-  <li><a href="#new-non-trivial-hardware" id="toc-new-non-trivial-hardware" class="nav-link" data-scroll-target="#new-non-trivial-hardware">New Non-Trivial Hardware</a></li>
   </ul></li>
   <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a>
   <ul class="collapse">
   <li><a href="#block-diagram" id="toc-block-diagram" class="nav-link" data-scroll-target="#block-diagram">Block Diagram</a></li>
-  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  <li><a href="#sec-schematic" id="toc-sec-schematic" class="nav-link" data-scroll-target="#sec-schematic">Schematic</a></li>
   <li><a href="#sec-flowchart" id="toc-sec-flowchart" class="nav-link" data-scroll-target="#sec-flowchart">Flowchart</a></li>
   </ul></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a>
@@ -181,11 +181,8 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="bill-of-materials">Bill of Materials</h2>
 <div id="tbl-bom" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Bill of materials
-</figcaption>
 <div aria-describedby="tbl-bom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="caption-top table">
+<table class="table">
 <thead>
 <tr class="header">
 <th style="text-align: center;"><strong>Part Name</strong></th>
@@ -220,6 +217,9 @@ Table&nbsp;1: Bill of materials
 </tbody>
 </table>
 </div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-bom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Bill of materials
+</figcaption>
 </figure>
 </div>
 </section>
@@ -236,22 +236,108 @@ Figure&nbsp;1: Design overview
 </figcaption>
 </figure>
 </div>
+<section id="new-non-trivial-hardware" class="level3">
+<h3 class="anchored" data-anchor-id="new-non-trivial-hardware">New Non-Trivial Hardware</h3>
+<p>The two new, non-trivial pieces of hardware that are used in this project are the Adafruit PDM microphone and the Hoysond LCD module.</p>
+<section id="adafruit-pdm-microphone" class="level4">
+<h4 class="anchored" data-anchor-id="adafruit-pdm-microphone">Adafruit PDM Microphone</h4>
+<p>We used a MP34DT01-M, a MEMS digital microphone. It outputs data in Pulse-Density Modulation (PDM) format, which is a format of representing an analog signal in a single bit, with the density of 1’s and 0’s reflecting the amplitude of the signal.</p>
+<p>This microphone itself took 4 inputs: a 3.3V power supply, a ground, a L/R channel selector for simplified stereo applications, and a synchronization input clock. The input clock was valid between frequencies of 3.25 to 1 MHz, which meant we were able to select a frequency and drive it from the FPGA. We chose to ground L/R out of default. The output was the Dout pin, and could be read by an FPGA pin in PDM format. The clock and Dout were connected directly to the FPGA board to minimize lag and voltage drop.</p>
+<p>Within E155, there has been no usage of this PDM format. The closest data format or acquisition method we had gone over was quadrature encoders, which we used in Lab 5. They were able to represent analog motion in two 1-bit digital signals, but PDM is a distinct method of representing analog waves in a single bit, which is beyond the previous material of this course.</p>
+</section>
+<section id="hoysond-lcd-module" class="level4">
+<h4 class="anchored" data-anchor-id="hoysond-lcd-module">Hoysond LCD Module</h4>
+<p>The LCD used seems to comprise the HD44780 Hitachi controller chip, as well as a PCF8574A bit-expander for I2C interfacing. The screen itself has four rows and 20 columns — or, in other words, 80 total spaces — with which to write characters of its user’s choosing. It needs 5 V of power to display characters properly, with the ability to adjust both its backlight brightness and contrast. There are two options for sending it instructions: either over I2C or directly through its 11-pin parallel interface, including:</p>
+<ul>
+<li>1 Enable bit (E)</li>
+<li>1 Register Select bit (RS)</li>
+<li>1 Read/Write bit (RW)</li>
+<li>8 data pins (D0 - D7)</li>
+</ul>
+<p>More specifics about these pins and their respective functionalities can be found in the <a href="https://www.handsontec.com/dataspecs/I2C_2004_LCD.pdf">datasheet</a> for the LCD’s Hitachi controller, specifically. Regardless, for both methods of communication, the module uses the sequences of high and low voltages detected in tandem with a look-up table, with each operation having its own lead-in op-code (such as the Set Address and Clear Display functions) and each character having its own unique sequence associated with it. The latter can be viewed rather clearly in <a href="#fig-lcd-look-up-table">Figure 2</a>, as follows:</p>
+<div id="fig-lcd-look-up-table" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lcd-look-up-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/lcd_look_up_table.png" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lcd-look-up-table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: LCD character options
+</figcaption>
+</figure>
+</div>
+<p>Note that if you decide to communicate with the LCD by sending bits to all of its pins in parallel, each transaction will have to be ended with a short pulse of the Enable (E) bit, so as to tell the module that its information has been completely updated.</p>
+<p>Moreover, the LCD requires a specifically-timed initialization sequence in order to fully function. This is outlined in <a href="#fig-lcd-initialization">Figure 3</a>.</p>
+<div id="fig-lcd-initialization" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lcd-initialization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/lcd_initialization_sequence.png" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lcd-initialization-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: LCD initialization
+</figcaption>
+</figure>
+</div>
+<p>Ultimately, the features implemented with this hardware go above and beyond the previous material covered in class, as they require the configuration of an external display. More specifically, we had to learn about the different communication protocols that an LCD can use, and compare the pros and cons of both. Eventually, we came to the conclusion that using a parallel interface would be best because 1) when there are pins to spare for it, it’s the fastest, and 2) the <a href="https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf">datasheet</a> for the PCF8574A bit-expander is vague and thus, it is extremely hard to parse how to interact with it when using I2C; in the interest of not getting hung-up over something that could be easily avoided, we decided to bypass it entirely. (See the <a href="#sec-schematic">Schematic section</a> below for more details on some bugs that we needed to address when doing this.)</p>
+</section>
+</section>
 <section id="fpga-design-overview" class="level3">
 <h3 class="anchored" data-anchor-id="fpga-design-overview">FPGA Design Overview</h3>
-<p>Our microphone is a MP34DT01-M, a MEMS digital microphone. We drive this using a 1.536 MHz clock signal generated by the FPGA, and the microphone outputs a PDM, which is then fed into the FPGA. The top module is karaoke_top.sv, as found in fpga/src. The FPGA feeds the PDM signal through a pipeline of 3 digital audio filters: a CIC filter (cic.sv), Half-Band filter (hb.sv), and FIR filter (fir.sv).</p>
-<p>These filters were used to create a decimation ratio of 96, downsampling the 1.536 MHz PDM output down to a 16 kHz output. The CIC takes the brunt of the decimation with a 24 decimation ratio in 4 stages, converts the PDM to a PCM, and normalizes the output values between -1 to 1. The Half-Band and FIR filters create a passband from 0 to 4000 Hz, with a stopband at around 8000 Hz. Both filters have a decimation ratio of 2, and their coefficients were determined using matplotlib functions.</p>
-<p>The three filters generate a 16-bit, 16 kHz PCM output, with a new sample indicated by a pulse. These signals are fed into the SPI module (spi.sv), which generates a CS, SCK, and SDO, acting as the controller in this case. All relevant testbenches are found in “fpga/testbench” and the ModelSim project is found in “fpga/work” in our <a href="https://github.com/mayu-tatsu/e155-karaoke">GitHub repository</a> (as also mentioned below). The MCU then receives these values, acting as the peripheral, and accumulates them using the SPI peripheral, paired with the DMA peripheral.</p>
-<p>Some difficulties we encountered: - Finding the correct filter pipeline design and the coefficients - Minimizing resource usage - Figuring out new SPI configuration and implementing it - Synthesizing and flashing the executable</p>
+<p>The FPGA is in control of the microphone, processing its data, and sending that data to the MCU. Our microphone is a MP34DT01-M, a MEMS digital microphone. We drive this using a 1.536 MHz clock signal generated by the FPGA, and the microphone outputs data in Pulse-Density Modulation (PDM) format, which is then fed back into the FPGA. PDM is a format of representing an analog signal in a single bit, with the density of 1’s and 0’s reflecting the amplitude of the <a href="#fig-pdm-vs-analog-signal">Figure 4</a> signal.</p>
+<div id="fig-pdm-vs-analog-signal" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pdm-vs-analog-signal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/pdm_vs_analog_signal.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdm-vs-analog-signal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: PDM vs.&nbsp;Analog signals
+</figcaption>
+</figure>
+</div>
+<p>The top module is karaoke_top.sv, as found in the <a href="https://github.com/mayu-tatsu/e155-karaoke">GitHub</a>’s fpga/src. The FPGA feeds the PDM signal through a pipeline of 3 digital audio filters: a CIC filter / cic.sv, half-band filter / hb.sv, and FIR filter / fir.sv.</p>
+<p>These three filters were used to create a decimation ratio of 96, downsampling the 1.536 MHz PDM output down to a 16 kHz output. The CIC takes the brunt of the decimation with a 24 decimation ratio in 4 stages, converts the PDM to a PCM, and normalizes the output values between -1 to 1. The half-band and FIR filters create a passband from 0 to 4000 Hz, with a stopband at around 8000 Hz. Both filters have a decimation ratio of 2, and their coefficients were determined using matplotlib functions.</p>
+<p>The three filters generate a 16-bit, 16 kHz PCM output, with a new sample indicated by a pulse. These signals are fed into the SPI module / spi.sv, which generates a CS, SCK, and SDO, acting as the controller/master in this case. All relevant testbenches are found in fpga/testbench and the ModelSim project is found in fpga/work. The MCU then receives these values, acting as the peripheral/slave, and accumulates them using the SPI peripheral, paired with the DMA peripheral.</p>
+<p>Some difficulties we encountered: * Finding the correct filter pipeline design and the coefficients for the half-band and FIR * Minimizing resource usage * Figuring out new SPI configuration and implementing it * Synthesizing and flashing the executable</p>
+<p>Initially, we were naively hoping to create a decimation ratio of 144, bringing a PDM input rate of 2.304 MHz down to 16 kHz. This was due to a misunderstanding of half-band filters and the resources we could fit onto the board. Half-band filters are optimized FIR filters that require only half the number of taps, and therefore multiplications, but also can only decimate (or interpolate) at a rate of 2 every filter. We had assumed that half-bands filters would be able to handle 3x and 4x decimation (which, no, is not possible) during the project proposal stage. Once we read up more on half-bands, we decided to move to a 1.536 MHz to decimate it down to 16 kHz using a decimation ratio of 96. We determined that, for our purposes, the CIC filter would be able to handle a 24 decimation ratio without much change in ripple or attenuation via this <a href="">Figure 5</a> chart:</p>
+<div id="fig-decimation-chart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-decimation-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/decimation_chart.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-decimation-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: CIC decimation chart
+</figcaption>
+</figure>
+</div>
+<p>Since we wanted to make sure that the FIR would be able to handle everything in 16 taps to keep resource levels low, we decided to use two half-bands and keep the FIR only to minimize passband ripple and maximize stopband attenuation. However, when we loaded this onto the FPGA, there were not enough LUTs to accommodate this design. As a result, we settled on a finalized design of a 24-decimation ratio, 4-stage CIC filter, a half-band filter, and a 2x decimating and correcting final FIR filter.</p>
+<p>When it came to determining the coefficients, we started off trying to use some MATLAB code, but switched to Python with its easier remez() function. The code for this can be found here. When it came to implementing these filters in Verilog, we mentioned that it was difficult due to resource constraints. There was some trial-and-error involved, trying to get it down from 170+% resource usage down to our final 94% LUT4 usage. Our biggest issue was the multiplications required. The FPGA only has 8 DSP blocks, and all of those were devoted to the half-band multiplications. Which meant that the CIC, FIR, and the rest of the half-band additions all had to fit their calculations in the LUTs. The CIC was generally resource-optimized already due to its perk requiring only adders and delays by design. The FIR and half-band took some tweaking. We implemented pipelining in both filters to keep the critical path short and allow the synthesis tool to map arithmetic into smaller, slower LUT-based adders rather than huge blocks dedicated to multiplication. Then, we replaced all true multipliers in the FIR with hardcoded shift-add coefficient implementations, which finally pushed down our LUT usage below 100%.</p>
+<p>We also hit some snags while implementing the SPI. We were using some code based on Lab 7, which assumes a MCU-master, FPGA-slave configuration. However, it quickly came to be that our FPGA should be the master in our context, and as we switched those things around, as a result, we needed a new chip select (CS) signal, and switched around some pins. However, there was some confusion about which board should generate the CS signal between us partners, and the silkscreen and boards were generally designed around the assumption that the MCU would always be the master. That, and some two sets of pins coming out of the FPGA both labelled SCK/CS/MISO-CIPO took a day or two to figure out.</p>
+<p>Finally, once we got almost everything working regarding the MCU peripherals and the FPGA SPI module, we had some issues where, even in ambient noise, the microphone, filters, and FFTs combined would produce outputs ranging from 100 to 6000 Hz, jumping values multiple times in a second. We knew from verification and testing that all of these mechanisms should work in isolation, so we weren’t sure where the mix-up was coming from. In a last-ditch test to see if the ambient noise was too much (which it wasn’t), we left the lab to go to a quieter room. It turns out that synthesizing and loading the executable from Quinn’s personal computer through OpenFPGALoader fixed completely all of our issues despite using the same exact code and project setup (same .rdf files for Lattice, same Lattice version). There may be some timing constraints that we never specified that could be causing these mapping inconsistencies, but overall, we are still unsure exactly why this is. However, as a result, the microphone and FFT are now able to accurately detect and output frequencies.</p>
 </section>
 <section id="mcu-design-overview" class="level3">
 <h3 class="anchored" data-anchor-id="mcu-design-overview">MCU Design Overview</h3>
-<p>As for the MCU, one of the biggest problems was getting the LCD to consistently display the desired letters. More specifically, although the original plan was to use I2C to communicate between the two devices, it was discovered that there was a bit-expander attached to the bottom of the LCD that we had to go through first in order to actually write to our peripheral. However, because the data sheet for such a chip was so vague and therefore hard to understand, we decided to simply bypass it and send information to the data pins in parallel, instead. In total, there are eight data pins, as well as Read Select, Read/Write, and Enable pins. Thus, with the GPIO pins that were already being used for SPI, there were just barely enough pins on the breakout board (that we were actually able to use, at least) for our intended path forward.</p>
-<p>Unfortunately, there was still one key issue remaining: When we did this, some of the pins would display voltages of 1.5 V, as opposed to the ~3.3 V we expected. Because the characters being written on the LCD (along with the addresses being written to) are all completely dependent on the voltage levels they receive—with different high and low voltage patterns corresponding to different characters—this was obviously not good. More specifically, the minimum threshold for a voltage to be considered high by the LCD is 2.2 V, whereas the maximum threshold for a voltage to be considered low is 0.6 V; seeing as some pins had voltages floating between these two values, the LCD would randomly pick one to count it as and output the wrong thing accordingly. Ultimately, we found out that the root cause of this was the existence of two 0 ohm resistors connecting some of the MCU GPIO pins together. Thankfully, we were able to desolder these and subsequently use all of the pins as we initially intended.</p>
+<p>In short, our MCU serves as the primary driver for everything in this project that isn’t our microphone. The most significant components of its design — comprising both peripheral configurations and general functionalities — are listed and expounded upon as follows:</p>
+<section id="spi" class="level4">
+<h4 class="anchored" data-anchor-id="spi">SPI</h4>
+<p>First and foremost, SPI Receive-Only mode is set up such that the FPGA acts as the controller in every transaction, while the MCU acts exclusively as the peripheral. Although we initially used the SPI initialization function provided in <a href="https://qmiyamoto.github.io/E155-Portfolio/labs/lab7/lab7.html">Lab 7</a> as starter code, we quickly realized that this wouldn’t work, due to the nature of what we were trying to accomplish: a one-sided intake of information that the FPGA initiates, as opposed to two-way communication started off by the MCU. Taking advantage of the built-in connections between the FPGA and MCU pins on our PCB, we eventually set up the latter to continuously receive SCK, CS, and SDO signals as input from the former. It then stores the SDO data — our raw audio samples — in its data register, which we configure to be accessible by DMA.</p>
 </section>
-<section id="new-non-trivial-hardware" class="level3">
-<h3 class="anchored" data-anchor-id="new-non-trivial-hardware">New Non-Trivial Hardware</h3>
-<p>New hardware listed in section with description New hardware described with notes about the features to be implemented and how they go beyond the previous material covered in the course.</p>
-<p>The two new, non-trivial pieces of hardware that are used in this project are the Hoysond LCD module and the Adafruit PDM microphone.</p>
+<section id="dma" class="level4">
+<h4 class="anchored" data-anchor-id="dma">DMA</h4>
+</section>
+<section id="audio" class="level4">
+<h4 class="anchored" data-anchor-id="audio">Audio</h4>
+</section>
+<section id="timing" class="level4">
+<h4 class="anchored" data-anchor-id="timing">Timing</h4>
+</section>
+<section id="fft" class="level4">
+<h4 class="anchored" data-anchor-id="fft">FFT</h4>
+</section>
+<section id="grading" class="level4">
+<h4 class="anchored" data-anchor-id="grading">Grading</h4>
+</section>
+<section id="lcd" class="level4">
+<h4 class="anchored" data-anchor-id="lcd">LCD</h4>
+</section>
 </section>
 </section>
 <section id="technical-documentation" class="level2">
@@ -265,40 +351,43 @@ Figure&nbsp;1: Design overview
 <img src="images/final_block_diagram.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-block-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Block diagram
+Figure&nbsp;6: Block diagram
 </figcaption>
 </figure>
 </div>
-<p>The block diagram in <a href="#fig-final-block-diagram">Figure 2</a> depicts the general architecture implied by the SystemVerilog code.</p>
+<p>The block diagram in <a href="#fig-final-block-diagram">Figure 4</a> depicts the general architecture implied by the SystemVerilog code.</p>
+<p>[TO-DO!]</p>
 </section>
-<section id="schematic" class="level3">
-<h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
+<section id="sec-schematic" class="level3">
+<h3 class="anchored" data-anchor-id="sec-schematic">Schematic</h3>
 <div id="fig-final-schematic" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-final-schematic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/final_schematic.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-schematic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Schematic
+Figure&nbsp;7: Schematic
 </figcaption>
 </figure>
 </div>
-<p><a href="#fig-final-schematic">Figure 3</a> above depicts</p>
+<p><a href="#fig-final-schematic">Figure 5</a> above depicts</p>
+<p>[TO-DO!]</p>
 <p>Overall, the microphone and FPGA interfacing was done in accordance with the <a href="https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf">MP34DT01-M datasheet</a>. The most prominent feature of note is the tying of the LR port to ground, as that configures a DOUT signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.</p>
 </section>
 <section id="sec-flowchart" class="level3">
 <h3 class="anchored" data-anchor-id="sec-flowchart">Flowchart</h3>
+<p>[TO-DO!]</p>
 <div id="fig-final-flowchart" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-final-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src=".png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Flowchart
+Figure&nbsp;8: Flowchart
 </figcaption>
 </figure>
 </div>
-<p>The <a href="#fig-final-flowchart">Figure 4</a> flowchart provides a detailed overview of the microcontroller’s most significant routines.</p>
+<p>The <a href="#fig-final-flowchart">Figure 6</a> flowchart provides a detailed overview of the microcontroller’s most significant routines.</p>
 </section>
 </section>
 <section id="verification" class="level2">
@@ -312,40 +401,44 @@ Figure&nbsp;4: Flowchart
 <img src="images/midpoint_cic_tb_waves.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cic-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: CIC filter testbench
+Figure&nbsp;9: CIC filter testbench
 </figcaption>
 </figure>
 </div>
+<p>[TO-DO!]</p>
 <div id="fig-hb-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/midpoint_hb_tb_waves.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: Halfband filter testbench
+Figure&nbsp;10: Halfband filter testbench
 </figcaption>
 </figure>
 </div>
+<p>[TO-DO!]</p>
 <div id="fig-fir-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/midpoint_fir_tb_waves.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: FIR filter testbench
+Figure&nbsp;11: FIR filter testbench
 </figcaption>
 </figure>
 </div>
+<p>[TO-DO!]</p>
 <div id="fig-top-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-top-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/midpoint_top_tb_waves.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-top-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8: Top Level testbench
+Figure&nbsp;12: Top Level testbench
 </figcaption>
 </figure>
 </div>
+<p>[TO-DO!]</p>
 </section>
 <section id="oscilloscope-traces" class="level3">
 <h3 class="anchored" data-anchor-id="oscilloscope-traces">Oscilloscope Traces</h3>
@@ -355,24 +448,72 @@ Figure&nbsp;8: Top Level testbench
 <img src="images/lcd_logic_analyzer.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lcd-logic-analyzer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;9: LCD Logic Analyzer traces
+Figure&nbsp;13: LCD Logic Analyzer traces
 </figcaption>
 </figure>
 </div>
+<p>[TO-DO!]</p>
 </section>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>[TO-DO!]</p>
 <p>Results: What are the main results of your project. Results section clearly and quantitatively outlines the key performance aspects of the design with commentary to explain the design decisions.</p>
-<p>Short video showcasing a demonstration of the project Photos documenting final design</p>
+<div id="fig-video" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/vw2rmU5o_nw?si=B0km_b63cXBgvwma" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14: Demo video
+</figcaption>
+</figure>
+</div>
+<div id="fig-final-build" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-final-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/final_build.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15: Final build
+</figcaption>
+</figure>
+</div>
+<div id="fig-demo-day-team" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-demo-day-team-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/demo_day_team.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-demo-day-team-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16: Team on Demo Day
+</figcaption>
+</figure>
+</div>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
-<p>References: Citation (and hyperlinks where relevant) to any outside resources that were referenced in the design of the project. References are formatted with a clean and consistent format.</p>
+<p><a href="https://hmc-e155.github.io/">E155</a>: Course website.</p>
+<p><a href="https://hmc-e155.github.io/assets/doc/ds11451-stm32l432kc.pdf">STM32L432KC Datasheet</a>: STM32 MCU datasheet.</p>
+<p><a href="https://hmc-e155.github.io/assets/doc/rm0394-stm32l41xxx42xxx43xxx44xxx45xxx46xxx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf">STM32L432KC Reference Manual</a>: STM32 MCU reference manual.</p>
+<p><a href="https://qmiyamoto.github.io/E155-Portfolio/">Quinn Miyamoto’s E155 Portfolio</a>: Team member Quinn Miyamoto’s portfolio of this course’s labs.</p>
+<p><a href="https://jacksonphilion.github.io/final-project-portfolio/">Fix That Note! E155 Final Project Portfolio</a>: Past E155 portfolio for the Fix That Note! project, which involved telling a user what note their system was detecting.</p>
+<p><a href="https://tomverbeure.github.io/2020/09/30/Moving-Average-and-CIC-Filters.html">An Intuitive Look at Moving Average and CIC Filters</a>: A series of blogs made by Tom Verbeure on designing a pipeline for audio decimation and filtering.</p>
+<p><a href="https://www.mathworks.com/help/dsp/ug/fir-halfband-filter-design.html">FIR Halfband Filter Design</a>: A MATLAB guide to designing half-band filters, used in conjunction with the DSP-Related article below.</p>
+<p><a href="https://www.dsprelated.com/showarticle/1113.php">Simplest Calculation of Half-band Filter Coefficients</a>: An online guide to designing half-band filter coefficients.</p>
+<p><a href="https://github.com/jaycordaro/half-band-filter">jaycordaro/half-band-filter</a>: An implementation of a half-band FIR filter, from MATLAB to fixed point in SystemVerilog.</p>
+<p><a href="https://cdn-learn.adafruit.com/assets/assets/000/049/977/original/MP34DT01-M.pdf">MEMS audio sensor omnidirectional digital microphone</a>: Datasheet for MP34DT01-M.</p>
+<p><a href="https://controllerstech.com/interface-lcd-16x2-with-stm32-without-i2c/">Interface 16×2 LCD with STM32 (No I2C) — 4-bit Guide</a>: A guide to interfacing an LCD with an STM32 MCU with an 11-line parallel bus, instead of I2C.</p>
+<p><a href="https://deepbluembedded.com/stm32-lcd-16x2-tutorial-library-alphanumeric-lcd-16x2-interfacing/">STM32 LCD 16×2 Library &amp; Example | LCD Display Interfacing</a>: A guide to initializing and writing to an LCD using an STM32 MCU.</p>
+<p><a href="https://www.handsontec.com/dataspecs/I2C_2004_LCD.pdf">I2C Serial Interface 20x4 LCD Module</a>: Datasheet for the LCD’s HD44780 controller chip.</p>
+<p><a href="https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/3477/MC21605A6W-FPTLW.pdf">MC21605A6W-FPTLW</a>: Alternative LCD datasheet.</p>
+<p><a href="https://m0agx.eu/generating-signals-with-stm32l4-timer-dma-and-dac.html">Generating signals with STM32L4 timer, DMA and DAC</a>: A guide to interfacing DMA with SPI.</p>
+<p><a href="https://youtu.be/Z3_YsXXgWzw?si=PaWCxyRoxPfmdG3T">Fast Fourier Transform using the ARM CMSIS Library within the STM32 MCUs</a>: A video tutorial on how to pick a dominant frequency out of a given signal on the STM32 MCU, using ARM math functions (including the FFT).</p>
+<p><a href="https://thetechylife.com/how-do-you-normalize-a-signal/">Normalizing Signals for Enhanced Analysis and Interpretation</a>: A guide to normalizing signals as preparation for Fourier Transforms.</p>
+<p><a href="https://github.com/STMicroelectronics/cmsis-core/tree/10c319e2ed1a53a382f43a99eaa2b7b03d5b3489/DSP/Source">STMicroelectronics/cmsis-core</a>: GitHub repository of all ARM math functions.</p>
 </section>
 <section id="acknowledgements" class="level2">
 <h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
-<p>We would like to thank the entire MicroPs teaching team for their help in getting this project off of the ground this semester, especially Kavi Dey (’26) and Prof.&nbsp;Spencer. We really appreciate you!</p>
+<p>We would like to thank the entire MicroPs teaching team for their help in getting this project off of the ground this semester, especially <a href="https://www.linkedin.com/in/kavidey/">Kavi Dey</a> (’26) and Prof.&nbsp;Spencer. Additionally, special thanks goes out to <a href="https://www.linkedin.com/in/cole-plepel/">Cole Plepel</a> (’27) for transcribing our karaoke machine’s music. We really appreciate you!</p>
 
 
 </section>
