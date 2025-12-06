@@ -7,10 +7,8 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: project_proposal.qmd
-        text: Project Proposal
-      - href: midpoint_report.qmd
-        text: Midpoint Report
+      - href: final_report.qmd
+        text: Final Report
 
 format:
   html:
