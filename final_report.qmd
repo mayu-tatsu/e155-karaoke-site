@@ -39,9 +39,16 @@ The general, high-level overview of our project — with all of the protocols us
 The two new, non-trivial pieces of hardware that are used in this project are the Adafruit PDM microphone and the Hoysond LCD module.
 
 #### Adafruit PDM Microphone
-[TO-DO!]
+We used a MP34DT01-M, a MEMS digital microphone.
+It outputs data in Pulse-Density Modulation (PDM) format, which is a format of representing an analog signal in a single bit, with the density of 1’s and 0’s reflecting the amplitude of the signal.
 
-The PDM microphone is a microphone that outputs a digital signal.
+This microphone itself took 4 inputs: a 3.3V power supply, a ground, a L/R channel selector for simplified stereo applications, and a synchronization input clock.
+The input clock was valid between frequencies of 3.25 to 1 MHz, which meant we were able to select a frequency and drive it from the FPGA. We chose to ground L/R out of default.
+The output was the Dout pin, and could be read by an FPGA pin in PDM format. The clock and Dout were connected directly to the FPGA board to minimize lag and voltage drop.
+
+Within E155, there has been no usage of this PDM format.
+The closest data format or acquisition method we had gone over was quadrature encoders, which we used in Lab 5.
+They were able to represent analog motion in two 1-bit digital signals, but PDM is a distinct method of representing analog waves in a single bit, which is beyond the previous material of this course.
 
 #### Hoysond LCD Module
 The LCD used seems to comprise the HD44780 Hitachi controller chip, as well as a PCF8574A bit-expander for I2C interfacing.
