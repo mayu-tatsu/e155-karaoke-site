@@ -381,6 +381,7 @@ Figure&nbsp;6: Block diagram
 </figure>
 </div>
 <p>The block diagram in <a href="#fig-final-block-diagram">Figure 6</a> depicts the general architecture implied by the SystemVerilog code.</p>
+<p>Our inputs are the reset on the dev board and the continuous single-bit stream of data, <code>pdm_in</code>, from the microphone. The <code>clk_gen</code> module generates the internal 1.536 MHz clock and the 6 MHz clock that drives the 3 MHz SPI. The <code>pdm_data</code> input is first put into a synchronizer just in case since our leads are long (technically, the <code>clk</code> going out to the microphone should already have made sure of synchronization). The output data goes to the CIC (<code>cic.sv</code>), where it is transformed into a 16-bit, 64 kHz PCM with a validity signal that pulses whenever a new value is available. Those two signals then pass into the half-band filter (<code>hb.sv</code>), where it transforms into a 32 kHz PCM with a specific passband and stopband, along with some passband ripple and stopband attenuation. Then, these values are passed along to the final filter, the FIR (<code>fir.sv</code>), where it is finally decimated by another factor of 2 down to 16 kHz, and its ripple and stopband attenuation are corrected. The 16-bit values and the validity signal are finally passed into the SPI (<code>spi.sv</code>), where a <code>sck</code>, <code>sdo</code>, and <code>cs</code> signal are generated every 16 kHz on a 3 MHz SPI signal using cross-domain clocking. (TLDR: A new 16-bit PCM value is shifted out from the MSB to the LSB on the 3 MHz clock, with the FPGA acting as the master and the MCU as the slave.)</p>
 </section>
 <section id="sec-schematic" class="level3">
 <h3 class="anchored" data-anchor-id="sec-schematic">Schematic</h3>
@@ -417,6 +418,30 @@ Figure&nbsp;8: Flowchart
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
+<ul>
+<li>Design allows the user to choose a song through external hardware</li>
+</ul>
+<p>The red switch on the breadboard allows for choosing between Mr.&nbsp;Brightside (switch 4) and Golden (switch 2) after boot, and the LCD screen displays the instructions / options if no song is selected.</p>
+<ul>
+<li>Design detects input frequencies between 300 to 2000 Hz</li>
+</ul>
+<p>The microphone is able to detect frequencies between 250 Hz to 2400 Hz with a resolution of around 25 Hz. There is some latency when displaying detected frequencies on the LCD [in enable_test=1 mode], mostly as a result of the LCD. It is much faster when printing in SEGGER in debug mode, though that is also bottle-necked by the printf function. For a higher resolution, a higher FFT length could be used, though it would result in a higher latency as well. The testbenches for the filters used to make this possible is displayed below.</p>
+<ul>
+<li>Design scores the user’s singing by comparing detected and expected notes</li>
+</ul>
+<p>The design outputs a final score after averaging the amount of percent error based on each note expected. This is achieved by accumulating the percent error of each note and dividing the total at the end by the number of samples taken. We have implemented a lenient grading system as a result of the generally loud ambient noise in the Digital Lab and accounting for the talking during Demo Day, as found in this file.</p>
+<ul>
+<li>Design plays back the expected song through a speaker as reference &amp; Design utilizes a pitch and delay media format (as seen in Lab 4)</li>
+</ul>
+<p>Regarding both specs: we had to transcribe both songs, Golden and Mr.&nbsp;Brightside, into the Lab 4 {frequency, length} format. This code can be found here. The PWM and delay timer initialization code were similar to the lab code as well.</p>
+<ul>
+<li>Displays properly-timed lyrics on an LCD screen</li>
+</ul>
+<p>There is a LUT to pass in the proper signal to display a single character, and these characters</p>
+<ul>
+<li>LCD display does not flicker</li>
+</ul>
+<p>Yes, you can see this in this demo video.</p>
 <section id="sec-testbench-simulation" class="level3">
 <h3 class="anchored" data-anchor-id="sec-testbench-simulation">Testbench Simulation</h3>
 <div id="fig-cic-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -429,7 +454,7 @@ Figure&nbsp;9: CIC filter testbench
 </figcaption>
 </figure>
 </div>
-<p>[TO-DO!]</p>
+<p>An PDM input with various 1/0 densities represents a +1, -1, 0, sin(500), sin(5000), sin(15000), and sin(30000), along with a impulse, step response, and a mixed signal of a combined 1000, 8000, and 25000 Hz. You can see that the 1-bit signal is converted into a 16-bit, 64 kHz signal with the 15 kHz and 30 kHz attenuated out, as expected.</p>
 <div id="fig-hb-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -440,7 +465,7 @@ Figure&nbsp;10: Halfband filter testbench
 </figcaption>
 </figure>
 </div>
-<p>[TO-DO!]</p>
+<p>You can see that the validity signal, passed in at 64 kHz, is decimated by 2 down to 32 kHz (compare x_in_valid and y_out_valid). You can also see the same in the signals that are passed through, along with some latency.</p>
 <div id="fig-fir-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -451,18 +476,18 @@ Figure&nbsp;11: FIR filter testbench
 </figcaption>
 </figure>
 </div>
-<p>[TO-DO!]</p>
-<div id="fig-top-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
+<p>Again, you can see that the validity signal gets decimated by 2 down to 16 kHz and that the output signal gets choppier as a result. Also some attenuation occurs at frequencies of 7 kHz and 14 kHz, which is as expected.</p>
+<div id="fig-spi-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-top-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/midpoint_top_tb_waves.png" class="img-fluid figure-img">
+<div aria-describedby="fig-spi-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/spi_testbench.jpg" class="img-fluid figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-top-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;12: Top Level testbench
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-spi-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12: SPI testbench
 </figcaption>
 </figure>
 </div>
-<p>[TO-DO!]</p>
+<p>We passed in values through pcm_out, and you can see the correct values being passed through SCK (though only 0x0000, 0xFFFF are easy to read). The SPI runs at 3 MHz, but realistically, after the three filters, expected outputs come out at a frequency of 16 KHz, which is the width between inputs of 0x1234, 0x5678, and 0x9abc (so you would see this speed on the logic analyzer being fed into the MCU).</p>
 </section>
 <section id="oscilloscope-traces" class="level3">
 <h3 class="anchored" data-anchor-id="oscilloscope-traces">Oscilloscope Traces</h3>
