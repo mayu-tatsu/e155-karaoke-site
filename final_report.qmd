@@ -142,7 +142,7 @@ It turns out that synthesizing and loading the executable from Quinn’s persona
 There may be some timing constraints that we never specified that could be causing these mapping inconsistencies, but overall, we are still unsure exactly why this is.
 However, as a result, the microphone and FFT are now able to accurately detect and output frequencies. 
 
-### MCU Design Overview
+### MCU Design Overview {#sec-mcu-design-overview}
 In short, our MCU serves as the primary driver for everything in this project that isn't our microphone.
 The most significant components of its design — comprising both peripheral configurations and general functionalities — are listed and expounded upon as follows (note that a more visual representation of these routines can be found in a later [Flowchart](#sec-flowchart) section):
 
@@ -266,6 +266,10 @@ Thus, while difficult to portray in the above schematic, the removal of these re
 ![Flowchart](images/final_flowchart.png){#fig-final-flowchart}
 
 The [Figure 8](#fig-final-flowchart) flowchart provides a detailed overview of the microcontroller's most significant routines.
+This is a visual depiction of the peripherals discussed in section [MCU Design Overview](#sec-mcu-design-overview) above.
+In summary, there is a main loop that continuously polls for the user's song selection; when a song is eventually chosen, the `music_player()` function outputs each note using PWM-generation and delay functions, interrupting after every note is done playing to FFT the user's voice and subsequently determine their error.
+There is also an occasional interrupt that tells the program to output new lyrics on the LCD.
+Finally, the `singing_grader()` function informs the user of their error, before starting the process anew.
 
 
 ## Results
@@ -274,7 +278,7 @@ We achieved all of the goals we set out to meet, and had a wonderful time introd
 
 ![Team on Demo Day](images/demo_day_team.jpg){#fig-demo-day-team}
 
-Evidence of our project's functionality can be viewed in the following [Figure 9](#fig-video), with the tester, [Alan Kappler](https://www.linkedin.com/in/alan-kappler-5855aa268/), attempting to sing *Golden*:
+Evidence of our project's functionality can be viewed in the following [Figure 10](#fig-video), with the tester, [Alan Kappler](https://www.linkedin.com/in/alan-kappler-5855aa268/), attempting to sing *Golden*:
 
 ::: {#fig-video}
 {{< video https://youtu.be/vw2rmU5o_nw?si=B0km_b63cXBgvwma >}}
@@ -282,7 +286,7 @@ Evidence of our project's functionality can be viewed in the following [Figure 9
 Demo video
 :::
 
-Additionally, [Figure 10](#fig-final-build) provides a close-up photo of our machine:
+Additionally, [Figure 11](#fig-final-build) provides a close-up photo of our machine:
 
 ![Final build](images/final_build.jpg){#fig-final-build}
 
@@ -331,33 +335,33 @@ Seeing as software verification is just as important as hardware verification �
 
 ![CIC filter testbench](images/cic_tb.png){#fig-cic-tb}
 
-First and foremost, we have the [Figure 11](#fig-cic-tb) waveform outputs of our CIC filter.
+First and foremost, we have the [Figure 12](#fig-cic-tb) waveform outputs of our CIC filter.
 Here, a PDM input with various 1/0 densities represents a +1, -1, 0, sin(500), sin(5000), sin(15000), and sin(30000), along with an impulse, a step response, and a mixed signal of a combined 1000, 8000, and 25000 Hz.
 You can see that the 1-bit signal is converted into a 16-bit, 64 kHz signal with the 15 kHz and 30 kHz attenuated out, as expected.
 
 ![Half-band filter testbench](images/half_band_tb.png){#fig-hb-tb}
 
-Next, we have our half-band filter in [Figure 12](#fig-hb-tb).
+Next, we have our half-band filter in [Figure 13](#fig-hb-tb).
 You can see that the validity signal, passed in at 64 kHz, is decimated by 2 down to 32 kHz (compare `x_in_valid` and `y_out_valid`).
 You can also see the same in the signals that are passed through, along with some latency.
 
 ![FIR filter testbench](images/fir_tb.png){#fig-fir-tb}
 
-Again, with our [Figure 13](#fig-fir-tb) FIR testbench output, you can see that the validity signal gets decimated by 2 down to 16 kHz and that the output signal gets choppier as a result.
+Again, with our [Figure 14](#fig-fir-tb) FIR testbench output, you can see that the validity signal gets decimated by 2 down to 16 kHz and that the output signal gets choppier as a result.
 Also, some attenuation occurs at frequencies of 7 kHz and 14 kHz, which is as expected. 
 
 ![SPI testbench](images/spi_tb.png){#fig-spi-tb}
 
-Finally, with the [Figure 14](#fig-spi-tb) image, we can see evidence of our SPI transaction's success.
+Finally, with the [Figure 15](#fig-spi-tb) image, we can see evidence of our SPI transaction's success.
 We passed in values through `pcm_out`, and you can see the correct values being passed through SCK (though only 0x0000, 0xFFFF are easy to read).
 The SPI runs at 3 MHz, but realistically, after the three filters, expected outputs come out at a frequency of 16 KHz, which is the width between inputs of 0x1234, 0x5678, and 0x9abc (so you would see this speed on the logic analyzer being fed into the MCU).
 
 ### Oscilloscope Traces
 ![LCD Logic Analyzer traces](images/lcd_logic_analyzer.png){#fig-lcd-logic-analyzer}
 
-Last but not least, we used a Logic Analyzer in [Figure 15](#fig-lcd-logic-analyzer) to aid us in proving that the LCD works as expected.
+Last but not least, we used a Logic Analyzer in [Figure 16](#fig-lcd-logic-analyzer) to aid us in proving that the LCD works as expected.
 Here, we tried to write the message "uPs!" on-screen, which corresponds to binary codes of "01110101," "01010000," "01110011," and "00100001," respectively (with the most significant bit being what is passed in to `D7` and the least significant bit being passed into `D0`).
-Evidently, we can see that after `E` pulses for the first time (which is actually signified on `D8` in the above image), the traces match exactly what we expected.
+Evidently, we can see that after `RS` goes high for the first time (which is actually signified on `D9` in the above image), the traces match exactly what we expected.
 
 
 ## References
