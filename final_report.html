@@ -118,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#bill-of-materials" id="toc-bill-of-materials" class="nav-link" data-scroll-target="#bill-of-materials">Bill of Materials</a></li>
   <li><a href="#design-details" id="toc-design-details" class="nav-link" data-scroll-target="#design-details">Design Details</a>
   <ul class="collapse">
-  <li><a href="#new-non-trivial-hardware" id="toc-new-non-trivial-hardware" class="nav-link" data-scroll-target="#new-non-trivial-hardware">New Non-Trivial Hardware</a></li>
+  <li><a href="#sec-new-non-trivial-hardware" id="toc-sec-new-non-trivial-hardware" class="nav-link" data-scroll-target="#sec-new-non-trivial-hardware">New Non-Trivial Hardware</a></li>
   <li><a href="#fpga-design-overview" id="toc-fpga-design-overview" class="nav-link" data-scroll-target="#fpga-design-overview">FPGA Design Overview</a></li>
   <li><a href="#mcu-design-overview" id="toc-mcu-design-overview" class="nav-link" data-scroll-target="#mcu-design-overview">MCU Design Overview</a></li>
   </ul></li>
@@ -128,12 +128,12 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sec-schematic" id="toc-sec-schematic" class="nav-link" data-scroll-target="#sec-schematic">Schematic</a></li>
   <li><a href="#sec-flowchart" id="toc-sec-flowchart" class="nav-link" data-scroll-target="#sec-flowchart">Flowchart</a></li>
   </ul></li>
-  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
   <ul class="collapse">
   <li><a href="#sec-testbench-simulation" id="toc-sec-testbench-simulation" class="nav-link" data-scroll-target="#sec-testbench-simulation">Testbench Simulation</a></li>
   <li><a href="#oscilloscope-traces" id="toc-oscilloscope-traces" class="nav-link" data-scroll-target="#oscilloscope-traces">Oscilloscope Traces</a></li>
+  <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
   </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
   </ul>
@@ -236,8 +236,8 @@ Figure&nbsp;1: Design overview
 </figcaption>
 </figure>
 </div>
-<section id="new-non-trivial-hardware" class="level3">
-<h3 class="anchored" data-anchor-id="new-non-trivial-hardware">New Non-Trivial Hardware</h3>
+<section id="sec-new-non-trivial-hardware" class="level3">
+<h3 class="anchored" data-anchor-id="sec-new-non-trivial-hardware">New Non-Trivial Hardware</h3>
 <p>The two new, non-trivial pieces of hardware that are used in this project are the Adafruit PDM microphone and the Hoysond LCD module.</p>
 <section id="adafruit-pdm-microphone" class="level4">
 <h4 class="anchored" data-anchor-id="adafruit-pdm-microphone">Adafruit PDM Microphone</h4>
@@ -249,10 +249,10 @@ Figure&nbsp;1: Design overview
 <h4 class="anchored" data-anchor-id="hoysond-lcd-module">Hoysond LCD Module</h4>
 <p>The LCD used seems to comprise the HD44780 Hitachi controller chip, as well as a PCF8574A bit-expander for I2C interfacing. The screen itself has four rows and 20 columns — or, in other words, 80 total spaces — with which to write characters of its user’s choosing. It needs 5 V of power to display characters properly, with the ability to adjust both its backlight brightness and contrast. There are two options for sending it instructions: either over I2C or directly through its 11-pin parallel interface, including:</p>
 <ul>
-<li>1 Enable bit (E)</li>
-<li>1 Register Select bit (RS)</li>
-<li>1 Read/Write bit (RW)</li>
-<li>8 data pins (D0 - D7)</li>
+<li>1 Enable bit (<code>E</code>)</li>
+<li>1 Register Select bit (<code>RS</code>)</li>
+<li>1 Read/Write bit (<code>RW</code>)</li>
+<li>8 data pins (<code>D0</code> - <code>D7</code>)</li>
 </ul>
 <p>More specifics about these pins and their respective functionalities can be found in the <a href="https://www.handsontec.com/dataspecs/I2C_2004_LCD.pdf">datasheet</a> for the LCD’s Hitachi controller, specifically. Regardless, for both methods of communication, the module uses the sequences of high and low voltages detected in tandem with a look-up table, with each operation having its own lead-in op-code (such as the Set Address and Clear Display functions) and each character having its own unique sequence associated with it. The latter can be viewed rather clearly in <a href="#fig-lcd-look-up-table">Figure 2</a>, as follows:</p>
 <div id="fig-lcd-look-up-table" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -265,7 +265,7 @@ Figure&nbsp;2: LCD character options
 </figcaption>
 </figure>
 </div>
-<p>Note that if you decide to communicate with the LCD by sending bits to all of its pins in parallel, each transaction will have to be ended with a short pulse of the Enable (E) bit, so as to tell the module that its information has been completely updated.</p>
+<p>Note that if you decide to communicate with the LCD by sending bits to all of its pins in parallel, each transaction will have to be ended with a short pulse of the Enable (<code>E</code>) bit, so as to tell the module that its information has been completely updated.</p>
 <p>Moreover, the LCD requires a specifically-timed initialization sequence in order to fully function. This is outlined in <a href="#fig-lcd-initialization">Figure 3</a>.</p>
 <div id="fig-lcd-initialization" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -277,7 +277,7 @@ Figure&nbsp;3: LCD initialization
 </figcaption>
 </figure>
 </div>
-<p>Ultimately, the features implemented with this hardware go above and beyond the previous material covered in class, as they require the configuration of an external display. More specifically, we had to learn about the different communication protocols that an LCD can use, and compare the pros and cons of both. Eventually, we came to the conclusion that using a parallel interface would be best because 1) when there are pins to spare for it, it’s the fastest, and 2) the <a href="https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf">datasheet</a> for the PCF8574A bit-expander is vague and thus, it is extremely hard to parse how to interact with it when using I2C; in the interest of not getting hung-up over something that could be easily avoided, we decided to bypass it entirely. (See the <a href="#sec-schematic">Schematic section</a> below for more details on some bugs that we needed to address when doing this.)</p>
+<p>Ultimately, the features implemented with this hardware go above and beyond the previous material covered in class, as they require the configuration of an external display. More specifically, we had to learn about the different communication protocols that an LCD can use, and compare the pros and cons of both. Eventually, we came to the conclusion that using a parallel interface would be best because 1) when there are pins to spare for it, it’s the fastest, and 2) the <a href="https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf">datasheet</a> for the PCF8574A bit-expander is vague and thus, it is extremely hard to parse how to interact with it when using I2C; in the interest of not getting hung-up over something that could be easily avoided, we decided to bypass it entirely. (See the <a href="#sec-schematic">Schematic</a> section below for more details on some bugs that we needed to address when doing this.)</p>
 </section>
 </section>
 <section id="fpga-design-overview" class="level3">
@@ -286,22 +286,28 @@ Figure&nbsp;3: LCD initialization
 <div id="fig-pdm-vs-analog-signal" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdm-vs-analog-signal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/pdm_vs_analog_signal.png" class="img-fluid figure-img">
+<img src="images/pdm_vs_analog_signal.png" class="img-fluid figure-img" style="width:60.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdm-vs-analog-signal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4: PDM vs.&nbsp;Analog signals
 </figcaption>
 </figure>
 </div>
-<p>The top module is karaoke_top.sv, as found in the <a href="https://github.com/mayu-tatsu/e155-karaoke">GitHub</a>’s fpga/src. The FPGA feeds the PDM signal through a pipeline of 3 digital audio filters: a CIC filter / cic.sv, half-band filter / hb.sv, and FIR filter / fir.sv.</p>
+<p>The top module is karaoke_top.sv, as found in the <a href="https://github.com/mayu-tatsu/e155-karaoke">GitHub</a>’s <code>fpga/src</code>. The FPGA feeds the PDM signal through a pipeline of 3 digital audio filters: a CIC filter / <code>cic.sv</code>, half-band filter / <code>hb.sv</code>, and FIR filter / <code>fir.sv</code>.</p>
 <p>These three filters were used to create a decimation ratio of 96, downsampling the 1.536 MHz PDM output down to a 16 kHz output. The CIC takes the brunt of the decimation with a 24 decimation ratio in 4 stages, converts the PDM to a PCM, and normalizes the output values between -1 to 1. The half-band and FIR filters create a passband from 0 to 4000 Hz, with a stopband at around 8000 Hz. Both filters have a decimation ratio of 2, and their coefficients were determined using matplotlib functions.</p>
-<p>The three filters generate a 16-bit, 16 kHz PCM output, with a new sample indicated by a pulse. These signals are fed into the SPI module / spi.sv, which generates a CS, SCK, and SDO, acting as the controller/master in this case. All relevant testbenches are found in fpga/testbench and the ModelSim project is found in fpga/work. The MCU then receives these values, acting as the peripheral/slave, and accumulates them using the SPI peripheral, paired with the DMA peripheral.</p>
-<p>Some difficulties we encountered: * Finding the correct filter pipeline design and the coefficients for the half-band and FIR * Minimizing resource usage * Figuring out new SPI configuration and implementing it * Synthesizing and flashing the executable</p>
+<p>The three filters generate a 16-bit, 16 kHz PCM output, with a new sample indicated by a pulse. These signals are fed into the SPI module / <code>spi.sv</code>, which generates a <code>CS</code>, <code>SCK</code>, and <code>SDO</code>, acting as the controller/master in this case. All relevant testbenches are found in <code>fpga/testbench</code> and the ModelSim project is found in <code>fpga/work</code>. The MCU then receives these values, acting as the peripheral/slave, and accumulates them using the SPI peripheral, paired with the DMA peripheral.</p>
+<p>Some difficulties we encountered:</p>
+<ul>
+<li>Finding the correct filter pipeline design and the coefficients for the half-band and FIR</li>
+<li>Minimizing resource usage</li>
+<li>Figuring out new SPI configuration and implementing it</li>
+<li>Synthesizing and flashing the executable</li>
+</ul>
 <p>Initially, we were naively hoping to create a decimation ratio of 144, bringing a PDM input rate of 2.304 MHz down to 16 kHz. This was due to a misunderstanding of half-band filters and the resources we could fit onto the board. Half-band filters are optimized FIR filters that require only half the number of taps, and therefore multiplications, but also can only decimate (or interpolate) at a rate of 2 every filter. We had assumed that half-bands filters would be able to handle 3x and 4x decimation (which, no, is not possible) during the project proposal stage. Once we read up more on half-bands, we decided to move to a 1.536 MHz to decimate it down to 16 kHz using a decimation ratio of 96. We determined that, for our purposes, the CIC filter would be able to handle a 24 decimation ratio without much change in ripple or attenuation via this <a href="">Figure 5</a> chart:</p>
 <div id="fig-decimation-chart" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-decimation-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/decimation_chart.png" class="img-fluid figure-img">
+<img src="images/decimation_chart.png" class="img-fluid figure-img" style="width:80.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-decimation-chart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: CIC decimation chart
@@ -309,34 +315,53 @@ Figure&nbsp;5: CIC decimation chart
 </figure>
 </div>
 <p>Since we wanted to make sure that the FIR would be able to handle everything in 16 taps to keep resource levels low, we decided to use two half-bands and keep the FIR only to minimize passband ripple and maximize stopband attenuation. However, when we loaded this onto the FPGA, there were not enough LUTs to accommodate this design. As a result, we settled on a finalized design of a 24-decimation ratio, 4-stage CIC filter, a half-band filter, and a 2x decimating and correcting final FIR filter.</p>
-<p>When it came to determining the coefficients, we started off trying to use some MATLAB code, but switched to Python with its easier remez() function. The code for this can be found here. When it came to implementing these filters in Verilog, we mentioned that it was difficult due to resource constraints. There was some trial-and-error involved, trying to get it down from 170+% resource usage down to our final 94% LUT4 usage. Our biggest issue was the multiplications required. The FPGA only has 8 DSP blocks, and all of those were devoted to the half-band multiplications. Which meant that the CIC, FIR, and the rest of the half-band additions all had to fit their calculations in the LUTs. The CIC was generally resource-optimized already due to its perk requiring only adders and delays by design. The FIR and half-band took some tweaking. We implemented pipelining in both filters to keep the critical path short and allow the synthesis tool to map arithmetic into smaller, slower LUT-based adders rather than huge blocks dedicated to multiplication. Then, we replaced all true multipliers in the FIR with hardcoded shift-add coefficient implementations, which finally pushed down our LUT usage below 100%.</p>
-<p>We also hit some snags while implementing the SPI. We were using some code based on Lab 7, which assumes a MCU-master, FPGA-slave configuration. However, it quickly came to be that our FPGA should be the master in our context, and as we switched those things around, as a result, we needed a new chip select (CS) signal, and switched around some pins. However, there was some confusion about which board should generate the CS signal between us partners, and the silkscreen and boards were generally designed around the assumption that the MCU would always be the master. That, and some two sets of pins coming out of the FPGA both labelled SCK/CS/MISO-CIPO took a day or two to figure out.</p>
-<p>Finally, once we got almost everything working regarding the MCU peripherals and the FPGA SPI module, we had some issues where, even in ambient noise, the microphone, filters, and FFTs combined would produce outputs ranging from 100 to 6000 Hz, jumping values multiple times in a second. We knew from verification and testing that all of these mechanisms should work in isolation, so we weren’t sure where the mix-up was coming from. In a last-ditch test to see if the ambient noise was too much (which it wasn’t), we left the lab to go to a quieter room. It turns out that synthesizing and loading the executable from Quinn’s personal computer through OpenFPGALoader fixed completely all of our issues despite using the same exact code and project setup (same .rdf files for Lattice, same Lattice version). There may be some timing constraints that we never specified that could be causing these mapping inconsistencies, but overall, we are still unsure exactly why this is. However, as a result, the microphone and FFT are now able to accurately detect and output frequencies.</p>
+<p>When it came to determining the coefficients, we started off trying to use some MATLAB code, but switched to Python with its easier <code>remez()</code> function. The code for this can be found here. When it came to implementing these filters in Verilog, we mentioned that it was difficult due to resource constraints. There was some trial-and-error involved, trying to get it down from 170+% resource usage down to our final 94% LUT4 usage. Our biggest issue was the multiplications required. The FPGA only has 8 DSP blocks, and all of those were devoted to the half-band multiplications. Which meant that the CIC, FIR, and the rest of the half-band additions all had to fit their calculations in the LUTs. The CIC was generally resource-optimized already due to its perk requiring only adders and delays by design. The FIR and half-band took some tweaking. We implemented pipelining in both filters to keep the critical path short and allow the synthesis tool to map arithmetic into smaller, slower LUT-based adders rather than huge blocks dedicated to multiplication. Then, we replaced all true multipliers in the FIR with hardcoded shift-add coefficient implementations, which finally pushed down our LUT usage below 100%.</p>
+<p>We also hit some snags while implementing the SPI. We were using some code based on Lab 7, which assumes a MCU-master, FPGA-slave configuration. However, it quickly came to be that our FPGA should be the master in our context, and as we switched those things around, as a result, we needed a new chip select (<code>CS</code>) signal, and switched around some pins. However, there was some confusion about which board should generate the <code>CS</code> signal between us partners, and the silkscreen and boards were generally designed around the assumption that the MCU would always be the master. That, and some two sets of pins coming out of the FPGA both labelled <code>SCK</code>/<code>CS</code>/<code>MISO-CIPO</code> took a day or two to figure out.</p>
+<p>Finally, once we got almost everything working regarding the MCU peripherals and the FPGA SPI module, we had some issues where, even in ambient noise, the microphone, filters, and FFTs combined would produce outputs ranging from 100 to 6000 Hz, jumping values multiple times in a second. We knew from verification and testing that all of these mechanisms should work in isolation, so we weren’t sure where the mix-up was coming from. In a last-ditch test to see if the ambient noise was too much (which it wasn’t), we left the lab to go to a quieter room. It turns out that synthesizing and loading the executable from Quinn’s personal computer through OpenFPGALoader fixed completely all of our issues despite using the same exact code and project setup (same <code>.rdf</code> files for Lattice, same Lattice version). There may be some timing constraints that we never specified that could be causing these mapping inconsistencies, but overall, we are still unsure exactly why this is. However, as a result, the microphone and FFT are now able to accurately detect and output frequencies.</p>
 </section>
 <section id="mcu-design-overview" class="level3">
 <h3 class="anchored" data-anchor-id="mcu-design-overview">MCU Design Overview</h3>
-<p>In short, our MCU serves as the primary driver for everything in this project that isn’t our microphone. The most significant components of its design — comprising both peripheral configurations and general functionalities — are listed and expounded upon as follows:</p>
+<p>In short, our MCU serves as the primary driver for everything in this project that isn’t our microphone. The most significant components of its design — comprising both peripheral configurations and general functionalities — are listed and expounded upon as follows (note that a more visual representation of these routines can be found in a later <a href="#sec-flowchart">Flowchart</a> section):</p>
 <section id="spi" class="level4">
 <h4 class="anchored" data-anchor-id="spi">SPI</h4>
-<p>First and foremost, SPI Receive-Only mode is set up such that the FPGA acts as the controller in every transaction, while the MCU acts exclusively as the peripheral. Although we initially used the SPI initialization function provided in <a href="https://qmiyamoto.github.io/E155-Portfolio/labs/lab7/lab7.html">Lab 7</a> as starter code, we quickly realized that this wouldn’t work, due to the nature of what we were trying to accomplish: a one-sided intake of information that the FPGA initiates, as opposed to two-way communication started off by the MCU. Taking advantage of the built-in connections between the FPGA and MCU pins on our PCB, we eventually set up the latter to continuously receive SCK, CS, and SDO signals as input from the former. It then stores the SDO data — our raw audio samples — in its data register, which we configure to be accessible by DMA.</p>
+<p>First and foremost, SPI Receive-Only mode is set up such that the FPGA acts as the controller in every transaction, while the MCU acts exclusively as the peripheral. Although we initially used the SPI initialization function provided in <a href="https://qmiyamoto.github.io/E155-Portfolio/labs/lab7/lab7.html">Lab 7</a> as starter code, we quickly realized that this wouldn’t work, due to the nature of what we were trying to accomplish: a one-sided intake of information that the FPGA initiates, as opposed to two-way communication started off by the MCU. Taking advantage of the built-in connections between the FPGA and MCU pins on our PCB, we eventually set up the latter to continuously receive <code>SCK</code>, <code>CS</code>, and <code>SDO</code> signals as input from the former. It then stores the SDO data — our raw audio samples — in its data register, which we configure to be accessible by DMA.</p>
 </section>
 <section id="dma" class="level4">
 <h4 class="anchored" data-anchor-id="dma">DMA</h4>
+<p>The DMA peripheral, in essence, negates the need to use the <code>spiSendReceive()</code> function every time we want to read the data our MCU is receiving. Instead, it offers the option of automatically storing the contents of the SPI data register into a buffer array, so that the CPU is free to focus on running other, more intensive tasks. Notably, we configure our DMA to run in circular mode, so that we don’t need to manually disable and reenable the peripheral every time we want to update the array.</p>
+<p>Additionally, we have an interrupt that triggers on the DMA’s transfer-complete flag, waits until FFT calculations are complete, and copies the DMA buffer’s contents into a second, FFT-accessible array. This is done so that there is always one buffer holding the raw audio data and one buffer being mathematically processed, such that we don’t lose any important information in the case of the latter process being delayed.</p>
 </section>
 <section id="audio" class="level4">
 <h4 class="anchored" data-anchor-id="audio">Audio</h4>
+<p>For the actual song-playing aspect of the project, we simply reused the code we wrote previously in <a href="https://qmiyamoto.github.io/E155-Portfolio/labs/lab4/lab4.html">Lab 4</a> to play each song’s main singing melody. In fact, Lab 4 is where part of the original idea to do this stems from — we both thoroughly enjoyed the assignment and were interested in pursuing more ventures into the realm of audio. Overall, we mainly took the following: the PWM-generation code (generalized to work with any timer this time) and the specific setup for song arrays, {frequency (Hz), duration (ms)}. However, to achieve cleaner code this time, we decided to store all relevant song information in a header file instead of our main function. At the moment, we have two songs available to be played: Mr.&nbsp;Brightside and Golden.</p>
+<p>In the future, if we are to work on this project once more, we think it would be nice to have multiple tunes playing at once, so that we can realize the full brilliance of our songs and their harmonies. Moreover, it would be nice if there were a more convenient, less labor-intensive way to create each song array. This would allow us to have more song options available.</p>
+<p>Credit goes to <a href="https://www.linkedin.com/in/cole-plepel/">Cole Plepel</a> for doing the actual transcribing of our desired notes.</p>
 </section>
 <section id="timing" class="level4">
 <h4 class="anchored" data-anchor-id="timing">Timing</h4>
+<p>To ensure that a given song’s lyrics show up at the same time as the relevant beats, we first made an array that contained strings we could pass into the <code>display_message()</code> function (elaborated on below). Then, we created a timing array; this is the exact same length as the notes array, populated with zeros for notes we <em>don’t</em> want to change lyrics on and the index of the desired lyric on the notes we <em>do</em> want to change lyrics on. Whenever a nonzero timing array item is detected, it goes to the index of the lyrics array indicated and prints the words accordingly. While this was rather tedious to write and check by hand, it provides a fool-proof way of showing the correct line at the correct time always.</p>
 </section>
 <section id="fft" class="level4">
 <h4 class="anchored" data-anchor-id="fft">FFT</h4>
+<p>In order to understand what each audio sample’s dominant frequency is — and therefore, what note someone is singing — an FFT needs to be applied to the raw values. Thankfully, with the help of a <a href="https://youtu.be/Z3_YsXXgWzw?si=PaWCxyRoxPfmdG3T">tutorial</a>, this was extremely easy to do. In short, we have downloaded the <a href="https://github.com/STMicroelectronics/cmsis-core/tree/10c319e2ed1a53a382f43a99eaa2b7b03d5b3489/DSP/Source">ARM math library</a> and are now making use of its built-in functions. First, we apply Z-score normalization to the raw data, then a Hanning window, in order to maintain amplitude measurement accuracy while simultaneously reducing spectral leakage. Next, we pass this pre-processed signal into the actual FFT function, and take the magnitude of its resulting frequencies. Finally, we pick out and return the largest one.</p>
 </section>
 <section id="grading" class="level4">
 <h4 class="anchored" data-anchor-id="grading">Grading</h4>
+<p>Although our song-storing scheme is noted to be quite cumbersome above, it also allows for extremely easy grading. More specifically, we set a flag every time we’re done playing a note, which then triggers an interrupt. Inside the interrupt, we call our FFT function and compare the output frequency of that to the note we just played (and are therefore expecting to also hear from the user) at that point in time. We then keep a running total of the error calculated from this comparison, as well as a running total of the times this interrupt has been triggered.</p>
+<p>At the very end of a song’s run, we proceed to call <code>singing_grader()</code>, which calculates the user’s average error over the entire song by dividing the aforementioned running total of frequency error over the number of interrupt triggers, then multiplying the quotient by one hundred. Finally, we use the LCD to provide a letter grade based on — quite generously — a curve, as well as the percent error computed.</p>
 </section>
 <section id="lcd" class="level4">
 <h4 class="anchored" data-anchor-id="lcd">LCD</h4>
+<p>There are five significant functions for the LCD: <code>lcd_display_initialization()</code>, <code>lcd_display_write()</code>, <code>character_converter()</code>, <code>lcd_display_reset()</code>, and <code>display_message()</code>.</p>
+<p>The first, <code>lcd_display_initialization()</code>, is rather self-explanatory. As mentioned in the <a href="#sec-new-non-trivial-hardware">New, Non-Trivial Hardware</a> section above, there is a very specifically timed process that the LCD needs to go through in order to properly display anything. While it was a little hard to find the relevant page in the datasheet at first, we were eventually able to accomplish this easily. It also turns off the cursor and sets the starting address of the LCD’s Write to the first row and first column.</p>
+<p><code>lcd_display_write()</code> is also a simple function. It receives a nine-bit integer input and shifts each bit into the appropriate pin, such that the LCD is given some high-low sequence that it recognizes. <code>E</code> is then pulsed to push the updated information fully.</p>
+<p>Meanwhile, <code>character_converter()</code> consists entirely of one giant look-up table that matches the one depicted in <a href="#fig-lcd-look-up-table">Figure 2</a> above. It takes a string as input and checks whether or not said string matches a known character. If that is indeed the case, it outputs the corresponding number sequence that the LCD will actually understand.</p>
+<p>Furthermore, <code>lcd_display_reset()</code> turns the display off, clears the screen, and turns it back on again.</p>
+<p>Finally, <code>display_message()</code> combines all of the above to take in longer strings — such as lyrics — and get the LCD screen to output them accordingly. Note that due to the physical restrictions of the display, with there only being space for 80 characters at a time, writing more than that alloted amount will lead to wrap-around and incorrect messages; also, inputs have to be formatted taking into account the fact that the LCD writes to the first row first, then the third, second, and fourth, in that order. We initially struggled a little with stitching everything together, due to not really understanding pointers and addresses as well as we should have, but after addressing our mistake of passing a pointer into the function instead of a regular string like it was expecting, everything turned out fine.</p>
+</section>
+<section id="song-selection" class="level4">
+<h4 class="anchored" data-anchor-id="song-selection">Song Selection</h4>
+<p>Songs are chosen when you flip the associated switch to enable them. The LCD tells you which switch is which.</p>
 </section>
 </section>
 </section>
@@ -370,9 +395,9 @@ Figure&nbsp;7: Schematic
 </figcaption>
 </figure>
 </div>
-<p><a href="#fig-final-schematic">Figure 5</a> above depicts</p>
+<p><a href="#fig-final-schematic">Figure 5</a> above depicts the physical connections between all of the project’s necessary electronic components. This includes the PDM microphone, LCD screen, speaker, audio amplifier, FPGA, and MCU.</p>
+<p>Overall, the microphone and FPGA interfacing was done in accordance with the <a href="https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf">MP34DT01-M datasheet</a>. The most prominent feature of note is the tying of the LR port to ground, as that configures a <code>DOUT</code> signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.</p>
 <p>[TO-DO!]</p>
-<p>Overall, the microphone and FPGA interfacing was done in accordance with the <a href="https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf">MP34DT01-M datasheet</a>. The most prominent feature of note is the tying of the LR port to ground, as that configures a DOUT signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.</p>
 </section>
 <section id="sec-flowchart" class="level3">
 <h3 class="anchored" data-anchor-id="sec-flowchart">Flowchart</h3>
@@ -380,7 +405,7 @@ Figure&nbsp;7: Schematic
 <div id="fig-final-flowchart" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-final-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src=".png" class="img-fluid figure-img">
+<img src="images/final_flowchart.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-flowchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Flowchart
@@ -390,9 +415,8 @@ Figure&nbsp;8: Flowchart
 <p>The <a href="#fig-final-flowchart">Figure 6</a> flowchart provides a detailed overview of the microcontroller’s most significant routines.</p>
 </section>
 </section>
-<section id="verification" class="level2">
-<h2 class="anchored" data-anchor-id="verification">Verification</h2>
-<p>Various means of verification were used to ensure the project’s accuracy, including the following simulation waveforms and oscilloscope traces, as well as actual experimentation with the hardware itself.</p>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
 <section id="sec-testbench-simulation" class="level3">
 <h3 class="anchored" data-anchor-id="sec-testbench-simulation">Testbench Simulation</h3>
 <div id="fig-cic-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -452,13 +476,9 @@ Figure&nbsp;13: LCD Logic Analyzer traces
 </figcaption>
 </figure>
 </div>
-<p>[TO-DO!]</p>
 </section>
-</section>
-<section id="results" class="level2">
-<h2 class="anchored" data-anchor-id="results">Results</h2>
-<p>[TO-DO!]</p>
-<p>Results: What are the main results of your project. Results section clearly and quantitatively outlines the key performance aspects of the design with commentary to explain the design decisions.</p>
+<section id="documentation" class="level3">
+<h3 class="anchored" data-anchor-id="documentation">Documentation</h3>
 <div id="fig-video" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -489,6 +509,7 @@ Figure&nbsp;16: Team on Demo Day
 </figcaption>
 </figure>
 </div>
+</section>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
