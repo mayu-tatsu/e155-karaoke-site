@@ -229,27 +229,34 @@ The source code for this project can be found in the associated [GitHub reposito
 ### Block Diagram
 ![Block diagram](images/final_block_diagram.png){#fig-final-block-diagram}
 
-The block diagram in [Figure 4](#fig-final-block-diagram) depicts the general architecture implied by the SystemVerilog code.
-
-[TO-DO!]
+The block diagram in [Figure 6](#fig-final-block-diagram) depicts the general architecture implied by the SystemVerilog code.
 
 ### Schematic {#sec-schematic}
 ![Schematic](images/final_schematic.png){#fig-final-schematic}
 
-[Figure 5](#fig-final-schematic) above depicts the physical connections between all of the project's necessary electronic components.
-This includes the PDM microphone, LCD screen, speaker, audio amplifier, FPGA, and MCU.
+[Figure 7](#fig-final-schematic) above depicts the physical connections between all of the project's necessary electronic components.
+This includes the PDM microphone, LCD screen, speaker, audio amplifier, switches, FPGA, and MCU.
 
-Overall, the microphone and FPGA interfacing was done in accordance with the [MP34DT01-M datasheet](https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf).
-The most prominent feature of note is the tying of the LR port to ground, as that configures a `DOUT` signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.
+Note that the microphone and FPGA interfacing is done in accordance with the [MP34DT01-M datasheet](https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf).
+The most prominent feature of note is the tying of the `LR` port to ground, as that configures a `pdm_data` signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.
 
-[TO-DO!]
+Additionally, the MCU has direct, one-to-one pin connections with the LCD, with the exceptions being `RW` and `V0`.
+`RW` is tied directly to ground because we are only performing Write operations with the LCD and never Read ones, so the bit never needs to be set; by just wiring it to ground instead of sending a zero to the pin every time, this allows us to free up MCU ports that we can use for other, more important connections.
+Meanwhile, `V0` is wired to the output of a 10 kΩ potentiometer, so that the contrast between the backlight and the characters being displayed can be controlled.
+
+Furthermore, the MCU-audio-amplifier-speaker circuit shown at the very bottom is yet another component taken from [Lab 4](https://qmiyamoto.github.io/E155-Portfolio/labs/lab4/lab4.html), affording the users the ability to modify the speaker's volume.
+
+However, most notably of all, is the fact that MCU pins PA5 and PB7 are no longer connected, nor are PA6 and PB6.
+Previously, while it is not noted on the PCB schematic we are given for this class — or anywhere easily found in official STM32 documentation, for that matter — those two pairs of pins share respective connections via two surface-mounted 0 Ω resistors.
+This was rather frustrating to discover, as we were struggling with the LCD showing randomly inserted, completely incorrect characters for the longest time.
+As it turns out, because the LCD (without using I2C to communicate) depends entirely on the accuracy of analog signals, it was confused when it received voltages of 1.5 from those four pins, specifically — half of the 3.3 V signal it *should* have been getting.
+Seeing as 1.5 V is below the minimum threshold of 2.2 V to count as a high signal and above the maximum threshold of 0.6 V to count as a low signal, the LCD simply chose at random every time it encountered this problem.
+Thus, while difficult to portray in the above schematic, the removal of these resistors is perhaps the single-most important aspect of the circuit design to our team.
 
 ### Flowchart {#sec-flowchart}
-[TO-DO!]
-
 ![Flowchart](images/final_flowchart.png){#fig-final-flowchart}
 
-The [Figure 6](#fig-final-flowchart) flowchart provides a detailed overview of the microcontroller's most significant routines.
+The [Figure 8](#fig-final-flowchart) flowchart provides a detailed overview of the microcontroller's most significant routines.
 
 
 ## Results
