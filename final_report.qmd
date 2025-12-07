@@ -35,7 +35,7 @@ The general, high-level overview of our project — with all of the protocols us
 
 ![Design overview](images/final_overview_diagram.jpg){#fig-final-overview-diagram}
 
-### New Non-Trivial Hardware
+### New Non-Trivial Hardware {#sec-new-non-trivial-hardware}
 The two new, non-trivial pieces of hardware that are used in this project are the Adafruit PDM microphone and the Hoysond LCD module.
 
 #### Adafruit PDM Microphone
@@ -56,10 +56,10 @@ The screen itself has four rows and 20 columns — or, in other words, 80 total 
 It needs 5 V of power to display characters properly, with the ability to adjust both its backlight brightness and contrast.
 There are two options for sending it instructions: either over I2C or directly through its 11-pin parallel interface, including:
 
-* 1 Enable bit (E)
-* 1 Register Select bit (RS)
-* 1 Read/Write bit (RW)
-* 8 data pins (D0 - D7)
+* 1 Enable bit (`E`)
+* 1 Register Select bit (`RS`)
+* 1 Read/Write bit (`RW`)
+* 8 data pins (`D0` - `D7`)
 
 More specifics about these pins and their respective functionalities can be found in the [datasheet](https://www.handsontec.com/dataspecs/I2C_2004_LCD.pdf) for the LCD's Hitachi controller, specifically.
 Regardless, for both methods of communication, the module uses the sequences of high and low voltages detected in tandem with a look-up table, with each operation having its own lead-in op-code (such as the Set Address and Clear Display functions) and each character having its own unique sequence associated with it.
@@ -67,7 +67,7 @@ The latter can be viewed rather clearly in [Figure 2](#fig-lcd-look-up-table), a
 
 ![LCD character options](images/lcd_look_up_table.png){#fig-lcd-look-up-table width=60%}
 
-Note that if you decide to communicate with the LCD by sending bits to all of its pins in parallel, each transaction will have to be ended with a short pulse of the Enable (E) bit, so as to tell the module that its information has been completely updated.
+Note that if you decide to communicate with the LCD by sending bits to all of its pins in parallel, each transaction will have to be ended with a short pulse of the Enable (`E`) bit, so as to tell the module that its information has been completely updated.
 
 Moreover, the LCD requires a specifically-timed initialization sequence in order to fully function.
 This is outlined in [Figure 3](#fig-lcd-initialization).
@@ -77,7 +77,7 @@ This is outlined in [Figure 3](#fig-lcd-initialization).
 Ultimately, the features implemented with this hardware go above and beyond the previous material covered in class, as they require the configuration of an external display.
 More specifically, we had to learn about the different communication protocols that an LCD can use, and compare the pros and cons of both.
 Eventually, we came to the conclusion that using a parallel interface would be best because 1) when there are pins to spare for it, it's the fastest, and 2) the [datasheet](https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf) for the PCF8574A bit-expander is vague and thus, it is extremely hard to parse how to interact with it when using I2C; in the interest of not getting hung-up over something that could be easily avoided, we decided to bypass it entirely.
-(See the [Schematic section](#sec-schematic) below for more details on some bugs that we needed to address when doing this.)
+(See the [Schematic](#sec-schematic) section below for more details on some bugs that we needed to address when doing this.)
 
 ### FPGA Design Overview
 The FPGA is in control of the microphone, processing its data, and sending that data to the MCU. Our microphone is a MP34DT01-M, a MEMS digital microphone.
@@ -144,32 +144,83 @@ However, as a result, the microphone and FFT are now able to accurately detect a
 
 ### MCU Design Overview
 In short, our MCU serves as the primary driver for everything in this project that isn't our microphone.
-The most significant components of its design — comprising both peripheral configurations and general functionalities — are listed and expounded upon as follows:
+The most significant components of its design — comprising both peripheral configurations and general functionalities — are listed and expounded upon as follows (note that a more visual representation of these routines can be found in a later [Flowchart](#sec-flowchart) section):
 
 #### SPI
 First and foremost, SPI Receive-Only mode is set up such that the FPGA acts as the controller in every transaction, while the MCU acts exclusively as the peripheral.
 Although we initially used the SPI initialization function provided in [Lab 7](https://qmiyamoto.github.io/E155-Portfolio/labs/lab7/lab7.html) as starter code, we quickly realized that this wouldn't work, due to the nature of what we were trying to accomplish: a one-sided intake of information that the FPGA initiates, as opposed to two-way communication started off by the MCU.
-Taking advantage of the built-in connections between the FPGA and MCU pins on our PCB, we eventually set up the latter to continuously receive SCK, CS, and SDO signals as input from the former.
+Taking advantage of the built-in connections between the FPGA and MCU pins on our PCB, we eventually set up the latter to continuously receive `SCK`, `CS`, and `SDO` signals as input from the former.
 It then stores the SDO data — our raw audio samples — in its data register, which we configure to be accessible by DMA.
 
 #### DMA
-The DMA peripheral, in essence, negates the need to use the spiSendReceive() function every time we want to read the data our MCU is receiving.
+The DMA peripheral, in essence, negates the need to use the `spiSendReceive()` function every time we want to read the data our MCU is receiving.
+Instead, it offers the option of automatically storing the contents of the SPI data register into a buffer array, so that the CPU is free to focus on running other, more intensive tasks.
+Notably, we configure our DMA to run in circular mode, so that we don't need to manually disable and reenable the peripheral every time we want to update the array.
 
+Additionally, we have an interrupt that triggers on the DMA's transfer-complete flag, waits until FFT calculations are complete, and copies the DMA buffer's contents into a second, FFT-accessible array.
+This is done so that there is always one buffer holding the raw audio data and one buffer being mathematically processed, such that we don't lose any important information in the case of the latter process being delayed.
 
 #### Audio
+For the actual song-playing aspect of the project, we simply reused the code we wrote previously in [Lab 4](https://qmiyamoto.github.io/E155-Portfolio/labs/lab4/lab4.html) to play each song's main singing melody.
+In fact, Lab 4 is where part of the original idea to do this stems from — we both thoroughly enjoyed the assignment and were interested in pursuing more ventures into the realm of audio.
+Overall, we mainly took the following: the PWM-generation code (generalized to work with any timer this time) and the specific setup for song arrays, {frequency (Hz), duration (ms)}.
+However, to achieve cleaner code this time, we decided to store all relevant song information in a header file instead of our main function.
+At the moment, we have two songs available to be played: Mr. Brightside and Golden.
 
+In the future, if we are to work on this project once more, we think it would be nice to have multiple tunes playing at once, so that we can realize the full brilliance of our songs and their harmonies.
+Moreover, it would be nice if there were a more convenient, less labor-intensive way to create each song array.
+This would allow us to have more song options available.
+
+Credit goes to [Cole Plepel](https://www.linkedin.com/in/cole-plepel/) for doing the actual transcribing of our desired notes.
 
 #### Timing
-
+To ensure that a given song's lyrics show up at the same time as the relevant beats, we first made an array that contained strings we could pass into the `display_message()` function (elaborated on below).
+Then, we created a timing array; this is the exact same length as the notes array, populated with zeros for notes we *don't* want to change lyrics on and the index of the desired lyric on the notes we *do* want to change lyrics on.
+Whenever a nonzero timing array item is detected, it goes to the index of the lyrics array indicated and prints the words accordingly.
+While this was rather tedious to write and check by hand, it provides a fool-proof way of showing the correct line at the correct time always.
 
 #### FFT
-
+In order to understand what each audio sample's dominant frequency is — and therefore, what note someone is singing — an FFT needs to be applied to the raw values. 
+Thankfully, with the help of a [tutorial](https://youtu.be/Z3_YsXXgWzw?si=PaWCxyRoxPfmdG3T), this was extremely easy to do.
+In short, we have downloaded the [ARM math library](https://github.com/STMicroelectronics/cmsis-core/tree/10c319e2ed1a53a382f43a99eaa2b7b03d5b3489/DSP/Source) and are now making use of its built-in functions.
+First, we apply Z-score normalization to the raw data, then a Hanning window, in order to maintain amplitude measurement accuracy while simultaneously reducing spectral leakage.
+Next, we pass this pre-processed signal into the actual FFT function, and take the magnitude of its resulting frequencies.
+Finally, we pick out and return the largest one.
 
 #### Grading
+Although our song-storing scheme is noted to be quite cumbersome above, it also allows for extremely easy grading.
+More specifically, we set a flag every time we're done playing a note, which then triggers an interrupt.
+Inside the interrupt, we call our FFT function and compare the output frequency of that to the note we just played (and are therefore expecting to also hear from the user) at that point in time.
+We then keep a running total of the error calculated from this comparison, as well as a running total of the times this interrupt has been triggered.
 
+At the very end of a song's run, we proceed to call `singing_grader()`, which calculates the user's average error over the entire song by dividing the aforementioned running total of frequency error over the number of interrupt triggers, then multiplying the quotient by one hundred.
+Finally, we use the LCD to provide a letter grade based on — quite generously — a curve, as well as the percent error computed.
 
 #### LCD
+There are five significant functions for the LCD: `lcd_display_initialization()`, `lcd_display_write()`, `character_converter()`, `lcd_display_reset()`, and `display_message()`.
 
+The first, `lcd_display_initialization()`, is rather self-explanatory.
+As mentioned in the [New, Non-Trivial Hardware](#sec-new-non-trivial-hardware) section above, there is a very specifically timed process that the LCD needs to go through in order to properly display anything.
+While it was a little hard to find the relevant page in the datasheet at first, we were eventually able to accomplish this easily.
+It also turns off the cursor and sets the starting address of the LCD's Write to the first row and first column.
+
+`lcd_display_write()` is also a simple function.
+It receives a nine-bit integer input and shifts each bit into the appropriate pin, such that the LCD is given some high-low sequence that it recognizes.
+`E` is then pulsed to push the updated information fully.
+
+Meanwhile, `character_converter()` consists entirely of one giant look-up table that matches the one depicted in [Figure 2](#fig-lcd-look-up-table) above.
+It takes a string as input and checks whether or not said string matches a known character.
+If that is indeed the case, it outputs the corresponding number sequence that the LCD will actually understand.
+
+Furthermore, `lcd_display_reset()` turns the display off, clears the screen, and turns it back on again.
+
+Finally, `display_message()` combines all of the above to take in longer strings — such as lyrics — and get the LCD screen to output them accordingly.
+Note that due to the physical restrictions of the display, with there only being space for 80 characters at a time, writing more than that alloted amount will lead to wrap-around and incorrect messages; also, inputs have to be formatted taking into account the fact that the LCD writes to the first row first, then the third, second, and fourth, in that order.
+We initially struggled a little with stitching everything together, due to not really understanding pointers and addresses as well as we should have, but after addressing our mistake of passing a pointer into the function instead of a regular string like it was expecting, everything turned out fine.
+
+#### Song Selection
+Songs are chosen when you flip the associated switch to enable them.
+The LCD tells you which switch is which.
 
 
 ## Technical Documentation
@@ -185,12 +236,13 @@ The block diagram in [Figure 4](#fig-final-block-diagram) depicts the general ar
 ### Schematic {#sec-schematic}
 ![Schematic](images/final_schematic.png){#fig-final-schematic}
 
-[Figure 5](#fig-final-schematic) above depicts 
-
-[TO-DO!]
+[Figure 5](#fig-final-schematic) above depicts the physical connections between all of the project's necessary electronic components.
+This includes the PDM microphone, LCD screen, speaker, audio amplifier, FPGA, and MCU.
 
 Overall, the microphone and FPGA interfacing was done in accordance with the [MP34DT01-M datasheet](https://github.com/mayu-tatsu/e155-karaoke-site/blob/main/files/mp34dt01-m.pdf).
-The most prominent feature of note is the tying of the LR port to ground, as that configures a DOUT signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.
+The most prominent feature of note is the tying of the LR port to ground, as that configures a `DOUT` signal pattern of valid data when the CLK signal is low and high impedance when CLK is high.
+
+[TO-DO!]
 
 ### Flowchart {#sec-flowchart}
 [TO-DO!]
@@ -223,6 +275,8 @@ The [Figure 6](#fig-final-flowchart) flowchart provides a detailed overview of t
 ### Oscilloscope Traces
 ![LCD Logic Analyzer traces](images/lcd_logic_analyzer.png){#fig-lcd-logic-analyzer}
 
+
+### Documentation
 
 ::: {#fig-video}
 {{< video https://youtu.be/vw2rmU5o_nw?si=B0km_b63cXBgvwma >}}
