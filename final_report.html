@@ -429,7 +429,7 @@ Figure&nbsp;9: Team on Demo Day
 </figcaption>
 </figure>
 </div>
-<p>Evidence of our project’s functionality can be viewed in the following <a href="#fig-video">Figure 9</a>, with the tester, <a href="https://www.linkedin.com/in/alan-kappler-5855aa268/">Alan Kappler</a>, attempting to sing <em>Golden</em>:</p>
+<p>Evidence of our project’s functionality can be viewed in the following <a href="#fig-video">Figure 10</a>, with the tester, <a href="https://www.linkedin.com/in/alan-kappler-5855aa268/">Alan Kappler</a>, attempting to sing <em>Golden</em>:</p>
 <div id="fig-video" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -440,7 +440,7 @@ Figure&nbsp;10: Demo video
 </figcaption>
 </figure>
 </div>
-<p>Additionally, <a href="#fig-final-build">Figure 10</a> provides a close-up photo of our machine:</p>
+<p>Additionally, <a href="#fig-final-build">Figure 11</a> provides a close-up photo of our machine:</p>
 <div id="fig-final-build" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-final-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -494,7 +494,7 @@ Figure&nbsp;12: CIC filter testbench
 </figcaption>
 </figure>
 </div>
-<p>First and foremost, we have the <a href="#fig-cic-tb">Figure 11</a> waveform outputs of our CIC filter. Here, a PDM input with various 1/0 densities represents a +1, -1, 0, sin(500), sin(5000), sin(15000), and sin(30000), along with an impulse, a step response, and a mixed signal of a combined 1000, 8000, and 25000 Hz. You can see that the 1-bit signal is converted into a 16-bit, 64 kHz signal with the 15 kHz and 30 kHz attenuated out, as expected.</p>
+<p>First and foremost, we have the <a href="#fig-cic-tb">Figure 12</a> waveform outputs of our CIC filter. Here, a PDM input with various 1/0 densities represents a +1, -1, 0, sin(500), sin(5000), sin(15000), and sin(30000), along with an impulse, a step response, and a mixed signal of a combined 1000, 8000, and 25000 Hz. You can see that the 1-bit signal is converted into a 16-bit, 64 kHz signal with the 15 kHz and 30 kHz attenuated out, as expected.</p>
 <div id="fig-hb-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -505,7 +505,7 @@ Figure&nbsp;13: Half-band filter testbench
 </figcaption>
 </figure>
 </div>
-<p>Next, we have our half-band filter in <a href="#fig-hb-tb">Figure 12</a>. You can see that the validity signal, passed in at 64 kHz, is decimated by 2 down to 32 kHz (compare <code>x_in_valid</code> and <code>y_out_valid</code>). You can also see the same in the signals that are passed through, along with some latency.</p>
+<p>Next, we have our half-band filter in <a href="#fig-hb-tb">Figure 13</a>. You can see that the validity signal, passed in at 64 kHz, is decimated by 2 down to 32 kHz (compare <code>x_in_valid</code> and <code>y_out_valid</code>). You can also see the same in the signals that are passed through, along with some latency.</p>
 <div id="fig-fir-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -516,7 +516,7 @@ Figure&nbsp;14: FIR filter testbench
 </figcaption>
 </figure>
 </div>
-<p>Again, with our <a href="#fig-fir-tb">Figure 13</a> FIR testbench output, you can see that the validity signal gets decimated by 2 down to 16 kHz and that the output signal gets choppier as a result. Also, some attenuation occurs at frequencies of 7 kHz and 14 kHz, which is as expected.</p>
+<p>Again, with our <a href="#fig-fir-tb">Figure 14</a> FIR testbench output, you can see that the validity signal gets decimated by 2 down to 16 kHz and that the output signal gets choppier as a result. Also, some attenuation occurs at frequencies of 7 kHz and 14 kHz, which is as expected.</p>
 <div id="fig-spi-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-spi-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -527,7 +527,7 @@ Figure&nbsp;15: SPI testbench
 </figcaption>
 </figure>
 </div>
-<p>Finally, with the <a href="#fig-spi-tb">Figure 14</a> image, we can see evidence of our SPI transaction’s success. We passed in values through <code>pcm_out</code>, and you can see the correct values being passed through SCK (though only 0x0000, 0xFFFF are easy to read). The SPI runs at 3 MHz, but realistically, after the three filters, expected outputs come out at a frequency of 16 KHz, which is the width between inputs of 0x1234, 0x5678, and 0x9abc (so you would see this speed on the logic analyzer being fed into the MCU).</p>
+<p>Finally, with the <a href="#fig-spi-tb">Figure 15</a> image, we can see evidence of our SPI transaction’s success. We passed in values through <code>pcm_out</code>, and you can see the correct values being passed through SCK (though only 0x0000, 0xFFFF are easy to read). The SPI runs at 3 MHz, but realistically, after the three filters, expected outputs come out at a frequency of 16 KHz, which is the width between inputs of 0x1234, 0x5678, and 0x9abc (so you would see this speed on the logic analyzer being fed into the MCU).</p>
 </section>
 <section id="oscilloscope-traces" class="level3">
 <h3 class="anchored" data-anchor-id="oscilloscope-traces">Oscilloscope Traces</h3>
@@ -541,7 +541,7 @@ Figure&nbsp;16: LCD Logic Analyzer traces
 </figcaption>
 </figure>
 </div>
-<p>Last but not least, we used a Logic Analyzer in <a href="#fig-lcd-logic-analyzer">Figure 15</a> to aid us in proving that the LCD works as expected. Here, we tried to write the message “uPs!” on-screen, which corresponds to binary codes of “01110101,” “01010000,” “01110011,” and “00100001,” respectively (with the most significant bit being what is passed in to <code>D7</code> and the least significant bit being passed into <code>D0</code>). Evidently, we can see that after <code>E</code> pulses for the first time (which is actually signified on <code>D8</code> in the above image), the traces match exactly what we expected.</p>
+<p>Last but not least, we used a Logic Analyzer in <a href="#fig-lcd-logic-analyzer">Figure 16</a> to aid us in proving that the LCD works as expected. Here, we tried to write the message “uPs!” on-screen, which corresponds to binary codes of “01110101,” “01010000,” “01110011,” and “00100001,” respectively (with the most significant bit being what is passed in to <code>D7</code> and the least significant bit being passed into <code>D0</code>). Evidently, we can see that after <code>RS</code> goes high for the first time (which is actually signified on <code>D9</code> in the above image), the traces match exactly what we expected.</p>
 </section>
 </section>
 <section id="references" class="level2">
