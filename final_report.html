@@ -114,7 +114,7 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#project-overview" id="toc-project-overview" class="nav-link active" data-scroll-target="#project-overview">Project Overview</a></li>
-  <li><a href="#project-specifications" id="toc-project-specifications" class="nav-link" data-scroll-target="#project-specifications">Project Specifications</a></li>
+  <li><a href="#sec-project-specs" id="toc-sec-project-specs" class="nav-link" data-scroll-target="#sec-project-specs">Project Specifications</a></li>
   <li><a href="#bill-of-materials" id="toc-bill-of-materials" class="nav-link" data-scroll-target="#bill-of-materials">Bill of Materials</a></li>
   <li><a href="#design-details" id="toc-design-details" class="nav-link" data-scroll-target="#design-details">Design Details</a>
   <ul class="collapse">
@@ -130,9 +130,9 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
   <ul class="collapse">
+  <li><a href="#specifications-status" id="toc-specifications-status" class="nav-link" data-scroll-target="#specifications-status">Specifications Status</a></li>
   <li><a href="#sec-testbench-simulation" id="toc-sec-testbench-simulation" class="nav-link" data-scroll-target="#sec-testbench-simulation">Testbench Simulation</a></li>
   <li><a href="#oscilloscope-traces" id="toc-oscilloscope-traces" class="nav-link" data-scroll-target="#oscilloscope-traces">Oscilloscope Traces</a></li>
-  <li><a href="#documentation" id="toc-documentation" class="nav-link" data-scroll-target="#documentation">Documentation</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
@@ -165,8 +165,8 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="project-overview">Project Overview</h2>
 <p>This E155 final project sought to create a karaoke machine. The design allows users to choose a song to sing, displaying lyrics and playing the song as a guide via speaker, and ultimately compares the user’s singing to the expected frequencies, displaying both a letter grade and a percent error (between received and expected frequencies) after a song finishes. The main input is a MEMS digital microphone, which goes through digital signal processing and FFT to pick up the correct frequencies at which people speak into the microphone. The LCD screen functions as the principal user interface, directing users to choose songs, displaying lyrics, and presenting grades.</p>
 </section>
-<section id="project-specifications" class="level2">
-<h2 class="anchored" data-anchor-id="project-specifications">Project Specifications</h2>
+<section id="sec-project-specs" class="level2">
+<h2 class="anchored" data-anchor-id="sec-project-specs">Project Specifications</h2>
 <ul>
 <li>Design allows the user to choose a song through external hardware</li>
 <li>Design detects input frequencies between 300 to 2000 Hz</li>
@@ -333,7 +333,7 @@ Figure&nbsp;5: CIC decimation chart
 </section>
 <section id="audio" class="level4">
 <h4 class="anchored" data-anchor-id="audio">Audio</h4>
-<p>For the actual song-playing aspect of the project, we simply reused the code we wrote previously in <a href="https://qmiyamoto.github.io/E155-Portfolio/labs/lab4/lab4.html">Lab 4</a> to play each song’s main singing melody. In fact, Lab 4 is where part of the original idea to do this stems from — we both thoroughly enjoyed the assignment and were interested in pursuing more ventures into the realm of audio. Overall, we mainly took the following: the PWM-generation code (generalized to work with any timer this time) and the specific setup for song arrays, {frequency (Hz), duration (ms)}. However, to achieve cleaner code this time, we decided to store all relevant song information in a header file instead of our main function. At the moment, we have two songs available to be played: Mr.&nbsp;Brightside and Golden.</p>
+<p>For the actual song-playing aspect of the project, we simply reused the code we wrote previously in <a href="https://qmiyamoto.github.io/E155-Portfolio/labs/lab4/lab4.html">Lab 4</a> to play each song’s main singing melody. In fact, Lab 4 is where part of the original idea to do this stems from — we both thoroughly enjoyed the assignment and were interested in pursuing more ventures into the realm of audio. Overall, we mainly took the following: the PWM-generation code (generalized to work with any timer this time) and the specific setup for song arrays, {frequency (Hz), duration (ms)}. However, to achieve cleaner code this time, we decided to store all relevant song information in a header file instead of our main function. At the moment, we have two songs available to be played: <em>Mr.&nbsp;Brightside</em> and <em>Golden</em>.</p>
 <p>In the future, if we are to work on this project once more, we think it would be nice to have multiple tunes playing at once, so that we can realize the full brilliance of our songs and their harmonies. Moreover, it would be nice if there were a more convenient, less labor-intensive way to create each song array. This would allow us to have more song options available.</p>
 <p>Credit goes to <a href="https://www.linkedin.com/in/cole-plepel/">Cole Plepel</a> for doing the actual transcribing of our desired notes.</p>
 </section>
@@ -418,76 +418,116 @@ Figure&nbsp;8: Flowchart
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>Overall, our work on the project resulted in a resounding success! We achieved all of the goals we set out to meet, and had a wonderful time introducing others to our karaoke machine on Demo Day.</p>
+<div id="fig-demo-day-team" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-demo-day-team-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/demo_day_team.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-demo-day-team-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Team on Demo Day
+</figcaption>
+</figure>
+</div>
+<p>Evidence of our project’s functionality can be viewed in the following <a href="#fig-video">Figure 9</a>, with the tester, <a href="https://www.linkedin.com/in/alan-kappler-5855aa268/">Alan Kappler</a>, attempting to sing <em>Golden</em>:</p>
+<div id="fig-video" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/vw2rmU5o_nw?si=B0km_b63cXBgvwma" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Demo video
+</figcaption>
+</figure>
+</div>
+<p>Additionally, <a href="#fig-final-build">Figure 10</a> provides a close-up photo of our machine:</p>
+<div id="fig-final-build" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-final-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/final_build.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Final build
+</figcaption>
+</figure>
+</div>
+<p>While it would have been nice to have a covering that isn’t just a cardboard box wrapped in silver duct tape, we are still rather pleased with our final product. As we are not mechanical engineers, it ultimately has a little charm to it :)</p>
+<section id="specifications-status" class="level3">
+<h3 class="anchored" data-anchor-id="specifications-status">Specifications Status</h3>
+<p>Referring back to the <a href="#sec-project-specs">specifications</a> outlined above, we can more quantitatively define our success as follows:</p>
 <ul>
-<li>Design allows the user to choose a song through external hardware</li>
+<li>Design allows the user to choose a song through external hardware → <strong>STATUS: Met!</strong></li>
 </ul>
-<p>The red switch on the breadboard allows for choosing between Mr.&nbsp;Brightside (switch 4) and Golden (switch 2) after boot, and the LCD screen displays the instructions / options if no song is selected.</p>
+<p>The red switch on the breadboard allows for choosing between <em>Mr.&nbsp;Brightside</em> (switch 4) and <em>Golden</em> (switch 2) after boot, and the LCD screen displays the instructions / options if no song is selected.</p>
 <ul>
-<li>Design detects input frequencies between 300 to 2000 Hz</li>
+<li>Design detects input frequencies between 300 to 2000 Hz → <strong>STATUS: Met!</strong></li>
 </ul>
-<p>The microphone is able to detect frequencies between 250 Hz to 2400 Hz with a resolution of around 25 Hz. There is some latency when displaying detected frequencies on the LCD [in enable_test=1 mode], mostly as a result of the LCD. It is much faster when printing in SEGGER in debug mode, though that is also bottle-necked by the printf function. For a higher resolution, a higher FFT length could be used, though it would result in a higher latency as well. The testbenches for the filters used to make this possible is displayed below.</p>
+<p>The microphone is able to detect frequencies between 250 Hz to 2400 Hz with a resolution of around 25 Hz. There is some latency when displaying detected frequencies on the LCD, mostly as a result of the LCD’s ability to refresh its display. It is much faster when printing in SEGGER in debug mode, though that is also bottle-necked by the <code>printf</code> function. For a higher resolution, a higher FFT length could be used, though it would result in a higher latency as well. The testbenches for the filters used to make this possible is displayed in the <a href="#sec-testbench-simulation">Testbenches</a> section below.</p>
 <ul>
-<li>Design scores the user’s singing by comparing detected and expected notes</li>
+<li>Design scores the user’s singing by comparing detected and expected notes → <strong>STATUS: Met!</strong></li>
 </ul>
-<p>The design outputs a final score after averaging the amount of percent error based on each note expected. This is achieved by accumulating the percent error of each note and dividing the total at the end by the number of samples taken. We have implemented a lenient grading system as a result of the generally loud ambient noise in the Digital Lab and accounting for the talking during Demo Day, as found in this file.</p>
+<p>The design outputs a final score after averaging the amount of percent error based on each note expected. This is achieved by accumulating the percent error of each note and dividing the total at the end by the number of samples taken. We have implemented a lenient grading system as a result of the generally loud ambient noise in the Digital Lab and accounting for the talking during Demo Day, as found in this <a href="https://github.com/mayu-tatsu/e155-karaoke/blob/main/mcu/src/singing_grader.c">file</a>.</p>
 <ul>
-<li>Design plays back the expected song through a speaker as reference &amp; Design utilizes a pitch and delay media format (as seen in Lab 4)</li>
+<li>Design plays back the expected song through a speaker as reference → <strong>STATUS: Met!</strong></li>
+<li>Design utilizes a pitch and delay media format (as seen in Lab 4) → <strong>STATUS: Met!</strong></li>
 </ul>
-<p>Regarding both specs: we had to transcribe both songs, Golden and Mr.&nbsp;Brightside, into the Lab 4 {frequency, length} format. This code can be found here. The PWM and delay timer initialization code were similar to the lab code as well.</p>
+<p>Regarding both specs: As stated earlier, we had to transcribe both songs, <em>Golden</em> and <em>Mr.&nbsp;Brightside</em>, into the Lab 4 {frequency (Hz), duration (ms)} format. The PWM and delay-timer code were similar to the lab code as well.</p>
 <ul>
-<li>Displays properly-timed lyrics on an LCD screen</li>
+<li>Displays properly-timed lyrics on an LCD screen → <strong>STATUS: Met!</strong></li>
 </ul>
-<p>There is a LUT to pass in the proper signal to display a single character, and these characters</p>
+<p>As mentioned before, we wrote our own <code>display_message()</code> function for the LCD, which we are now able to pass lyrics through in order to display the desired words on the screen. This is supplemented with the timing matrix, which syncs up the lyrics change with the exact beat we want. The evidence of this success can be viewed in the <a href="#fig-video">demo video</a> above.</p>
 <ul>
-<li>LCD display does not flicker</li>
+<li>LCD display does not flicker → <strong>STATUS: Met!</strong></li>
 </ul>
-<p>Yes, you can see this in this demo video.</p>
+<p>Again, evidence of this success can be viewed in the <a href="#fig-video">demo video</a> above.</p>
+</section>
 <section id="sec-testbench-simulation" class="level3">
 <h3 class="anchored" data-anchor-id="sec-testbench-simulation">Testbench Simulation</h3>
+<p>Seeing as software verification is just as important as hardware verification — as well as extremely useful when it comes to debugging — we have created various testbenches to aid us in rigorously proving that our filters, in particular, work.</p>
 <div id="fig-cic-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cic-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/midpoint_cic_tb_waves.png" class="img-fluid figure-img">
+<img src="images/cic_tb.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cic-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;9: CIC filter testbench
+Figure&nbsp;12: CIC filter testbench
 </figcaption>
 </figure>
 </div>
-<p>An PDM input with various 1/0 densities represents a +1, -1, 0, sin(500), sin(5000), sin(15000), and sin(30000), along with a impulse, step response, and a mixed signal of a combined 1000, 8000, and 25000 Hz. You can see that the 1-bit signal is converted into a 16-bit, 64 kHz signal with the 15 kHz and 30 kHz attenuated out, as expected.</p>
+<p>First and foremost, we have the <a href="#fig-cic-tb">Figure 11</a> waveform outputs of our CIC filter. Here, a PDM input with various 1/0 densities represents a +1, -1, 0, sin(500), sin(5000), sin(15000), and sin(30000), along with an impulse, a step response, and a mixed signal of a combined 1000, 8000, and 25000 Hz. You can see that the 1-bit signal is converted into a 16-bit, 64 kHz signal with the 15 kHz and 30 kHz attenuated out, as expected.</p>
 <div id="fig-hb-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/midpoint_hb_tb_waves.png" class="img-fluid figure-img">
+<img src="images/half_band_tb.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hb-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;10: Halfband filter testbench
+Figure&nbsp;13: Half-band filter testbench
 </figcaption>
 </figure>
 </div>
-<p>You can see that the validity signal, passed in at 64 kHz, is decimated by 2 down to 32 kHz (compare x_in_valid and y_out_valid). You can also see the same in the signals that are passed through, along with some latency.</p>
+<p>Next, we have our half-band filter in <a href="#fig-hb-tb">Figure 12</a>. You can see that the validity signal, passed in at 64 kHz, is decimated by 2 down to 32 kHz (compare <code>x_in_valid</code> and <code>y_out_valid</code>). You can also see the same in the signals that are passed through, along with some latency.</p>
 <div id="fig-fir-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/midpoint_fir_tb_waves.png" class="img-fluid figure-img">
+<img src="images/fir_tb.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fir-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;11: FIR filter testbench
+Figure&nbsp;14: FIR filter testbench
 </figcaption>
 </figure>
 </div>
-<p>Again, you can see that the validity signal gets decimated by 2 down to 16 kHz and that the output signal gets choppier as a result. Also some attenuation occurs at frequencies of 7 kHz and 14 kHz, which is as expected.</p>
+<p>Again, with our <a href="#fig-fir-tb">Figure 13</a> FIR testbench output, you can see that the validity signal gets decimated by 2 down to 16 kHz and that the output signal gets choppier as a result. Also, some attenuation occurs at frequencies of 7 kHz and 14 kHz, which is as expected.</p>
 <div id="fig-spi-tb" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-spi-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/spi_testbench.jpg" class="img-fluid figure-img">
+<img src="images/spi_tb.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-spi-tb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;12: SPI testbench
+Figure&nbsp;15: SPI testbench
 </figcaption>
 </figure>
 </div>
-<p>We passed in values through pcm_out, and you can see the correct values being passed through SCK (though only 0x0000, 0xFFFF are easy to read). The SPI runs at 3 MHz, but realistically, after the three filters, expected outputs come out at a frequency of 16 KHz, which is the width between inputs of 0x1234, 0x5678, and 0x9abc (so you would see this speed on the logic analyzer being fed into the MCU).</p>
+<p>Finally, with the <a href="#fig-spi-tb">Figure 14</a> image, we can see evidence of our SPI transaction’s success. We passed in values through <code>pcm_out</code>, and you can see the correct values being passed through SCK (though only 0x0000, 0xFFFF are easy to read). The SPI runs at 3 MHz, but realistically, after the three filters, expected outputs come out at a frequency of 16 KHz, which is the width between inputs of 0x1234, 0x5678, and 0x9abc (so you would see this speed on the logic analyzer being fed into the MCU).</p>
 </section>
 <section id="oscilloscope-traces" class="level3">
 <h3 class="anchored" data-anchor-id="oscilloscope-traces">Oscilloscope Traces</h3>
@@ -497,43 +537,11 @@ Figure&nbsp;12: SPI testbench
 <img src="images/lcd_logic_analyzer.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lcd-logic-analyzer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13: LCD Logic Analyzer traces
+Figure&nbsp;16: LCD Logic Analyzer traces
 </figcaption>
 </figure>
 </div>
-</section>
-<section id="documentation" class="level3">
-<h3 class="anchored" data-anchor-id="documentation">Documentation</h3>
-<div id="fig-video" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/vw2rmU5o_nw?si=B0km_b63cXBgvwma" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14: Demo video
-</figcaption>
-</figure>
-</div>
-<div id="fig-final-build" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-final-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/final_build.jpg" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-final-build-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;15: Final build
-</figcaption>
-</figure>
-</div>
-<div id="fig-demo-day-team" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-demo-day-team-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/demo_day_team.jpg" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-demo-day-team-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;16: Team on Demo Day
-</figcaption>
-</figure>
-</div>
+<p>Last but not least, we used a Logic Analyzer in <a href="#fig-lcd-logic-analyzer">Figure 15</a> to aid us in proving that the LCD works as expected. Here, we tried to write the message “uPs!” on-screen, which corresponds to binary codes of “01110101,” “01010000,” “01110011,” and “00100001,” respectively (with the most significant bit being what is passed in to <code>D7</code> and the least significant bit being passed into <code>D0</code>). Evidently, we can see that after <code>E</code> pulses for the first time (which is actually signified on <code>D8</code> in the above image), the traces match exactly what we expected.</p>
 </section>
 </section>
 <section id="references" class="level2">
