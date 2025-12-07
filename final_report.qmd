@@ -231,6 +231,15 @@ The source code for this project can be found in the associated [GitHub reposito
 
 The block diagram in [Figure 6](#fig-final-block-diagram) depicts the general architecture implied by the SystemVerilog code.
 
+Our inputs are the reset on the dev board and the continuous single-bit stream of data, `pdm_in`, from the microphone.
+The `clk_gen` module generates the internal 1.536 MHz clock and the 6 MHz clock that drives the 3 MHz SPI.
+The `pdm_data` input is first put into a synchronizer just in case since our leads are long (technically, the `clk` going out to the microphone should already have made sure of synchronization).
+The output data goes to the CIC (`cic.sv`), where it is transformed into a 16-bit, 64 kHz PCM with a validity signal that pulses whenever a new value is available.
+Those two signals then pass into the half-band filter (`hb.sv`), where it transforms into a 32 kHz PCM with a specific passband and stopband, along with some passband ripple and stopband attenuation.
+Then, these values are passed along to the final filter, the FIR (`fir.sv`), where it is finally decimated by another factor of 2 down to 16 kHz, and its ripple and stopband attenuation are corrected.
+The 16-bit values and the validity signal are finally passed into the SPI (`spi.sv`), where a `sck`, `sdo`, and `cs` signal are generated every 16 kHz on a 3 MHz SPI signal using cross-domain clocking.
+(TLDR: A new 16-bit PCM value is shifted out from the MSB to the LSB on the 3 MHz clock, with the FPGA acting as the master and the MCU as the slave.)
+
 ### Schematic {#sec-schematic}
 ![Schematic](images/final_schematic.png){#fig-final-schematic}
 
@@ -261,26 +270,56 @@ The [Figure 8](#fig-final-flowchart) flowchart provides a detailed overview of t
 
 ## Results
 
+* Design allows the user to choose a song through external hardware
+
+The red switch on the breadboard allows for choosing between Mr. Brightside (switch 4) and Golden (switch 2) after boot, and the LCD screen displays the instructions / options if no song is selected.
+
+* Design detects input frequencies between 300 to 2000 Hz
+
+The microphone is able to detect frequencies between 250 Hz to 2400 Hz with a resolution of around 25 Hz.
+There is some latency when displaying detected frequencies on the LCD [in enable_test=1 mode], mostly as a result of the LCD.
+It is much faster when printing in SEGGER in debug mode, though that is also bottle-necked by the printf function.
+For a higher resolution, a higher FFT length could be used, though it would result in a higher latency as well.
+The testbenches for the filters used to make this possible is displayed below.
+
+* Design scores the user’s singing by comparing detected and expected notes
+
+The design outputs a final score after averaging the amount of percent error based on each note expected.
+This is achieved by accumulating the percent error of each note and dividing the total at the end by the number of samples taken. We have implemented a lenient grading system as a result of the generally loud ambient noise in the Digital Lab and accounting for the talking during Demo Day, as found in this file.
+
+* Design plays back the expected song through a speaker as reference & Design utilizes a pitch and delay media format (as seen in Lab 4)
+
+Regarding both specs: we had to transcribe both songs, Golden and Mr. Brightside, into the Lab 4 {frequency, length} format. This code can be found here. The PWM and delay timer initialization code were similar to the lab code as well.
+
+* Displays properly-timed lyrics on an LCD screen
+
+There is a LUT to pass in the proper signal to display a single character, and these characters 
+
+* LCD display does not flicker
+
+Yes, you can see this in this demo video.
+
 
 ### Testbench Simulation {#sec-testbench-simulation}
 ![CIC filter testbench](images/midpoint_cic_tb_waves.png){#fig-cic-tb}
 
-[TO-DO!]
+An PDM input with various 1/0 densities represents a +1, -1, 0, sin(500), sin(5000), sin(15000), and sin(30000), along with a impulse, step response, and a mixed signal of a combined 1000, 8000, and 25000 Hz. You can see that the 1-bit signal is converted into a 16-bit, 64 kHz signal with the 15 kHz and 30 kHz attenuated out, as expected.
 
 ![Halfband filter testbench](images/midpoint_hb_tb_waves.png){#fig-hb-tb}
 
-[TO-DO!]
+You can see that the validity signal, passed in at 64 kHz, is decimated by 2 down to 32 kHz (compare x_in_valid and y_out_valid). You can also see the same in the signals that are passed through, along with some latency.
 
 ![FIR filter testbench](images/midpoint_fir_tb_waves.png){#fig-fir-tb}
 
-[TO-DO!]
+Again, you can see that the validity signal gets decimated by 2 down to 16 kHz and that the output signal gets choppier as a result. Also some attenuation occurs at frequencies of 7 kHz and 14 kHz, which is as expected. 
 
-![Top Level testbench](images/midpoint_top_tb_waves.png){#fig-top-tb}
+![SPI testbench](images/spi_testbench.jpg){#fig-spi-tb}
 
-[TO-DO!]
+We passed in values through pcm_out, and you can see the correct values being passed through SCK (though only 0x0000, 0xFFFF are easy to read). The SPI runs at 3 MHz, but realistically, after the three filters, expected outputs come out at a frequency of 16 KHz, which is the width between inputs of 0x1234, 0x5678, and 0x9abc (so you would see this speed on the logic analyzer being fed into the MCU).
 
 ### Oscilloscope Traces
 ![LCD Logic Analyzer traces](images/lcd_logic_analyzer.png){#fig-lcd-logic-analyzer}
+
 
 
 ### Documentation
