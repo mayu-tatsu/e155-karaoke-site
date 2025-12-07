@@ -120,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#sec-new-non-trivial-hardware" id="toc-sec-new-non-trivial-hardware" class="nav-link" data-scroll-target="#sec-new-non-trivial-hardware">New Non-Trivial Hardware</a></li>
   <li><a href="#fpga-design-overview" id="toc-fpga-design-overview" class="nav-link" data-scroll-target="#fpga-design-overview">FPGA Design Overview</a></li>
-  <li><a href="#mcu-design-overview" id="toc-mcu-design-overview" class="nav-link" data-scroll-target="#mcu-design-overview">MCU Design Overview</a></li>
+  <li><a href="#sec-mcu-design-overview" id="toc-sec-mcu-design-overview" class="nav-link" data-scroll-target="#sec-mcu-design-overview">MCU Design Overview</a></li>
   </ul></li>
   <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a>
   <ul class="collapse">
@@ -319,8 +319,8 @@ Figure&nbsp;5: CIC decimation chart
 <p>We also hit some snags while implementing the SPI. We were using some code based on Lab 7, which assumes a MCU-master, FPGA-slave configuration. However, it quickly came to be that our FPGA should be the master in our context, and as we switched those things around, as a result, we needed a new chip select (<code>CS</code>) signal, and switched around some pins. However, there was some confusion about which board should generate the <code>CS</code> signal between us partners, and the silkscreen and boards were generally designed around the assumption that the MCU would always be the master. That, and some two sets of pins coming out of the FPGA both labelled <code>SCK</code>/<code>CS</code>/<code>MISO-CIPO</code> took a day or two to figure out.</p>
 <p>Finally, once we got almost everything working regarding the MCU peripherals and the FPGA SPI module, we had some issues where, even in ambient noise, the microphone, filters, and FFTs combined would produce outputs ranging from 100 to 6000 Hz, jumping values multiple times in a second. We knew from verification and testing that all of these mechanisms should work in isolation, so we weren’t sure where the mix-up was coming from. In a last-ditch test to see if the ambient noise was too much (which it wasn’t), we left the lab to go to a quieter room. It turns out that synthesizing and loading the executable from Quinn’s personal computer through OpenFPGALoader fixed completely all of our issues despite using the same exact code and project setup (same <code>.rdf</code> files for Lattice, same Lattice version). There may be some timing constraints that we never specified that could be causing these mapping inconsistencies, but overall, we are still unsure exactly why this is. However, as a result, the microphone and FFT are now able to accurately detect and output frequencies.</p>
 </section>
-<section id="mcu-design-overview" class="level3">
-<h3 class="anchored" data-anchor-id="mcu-design-overview">MCU Design Overview</h3>
+<section id="sec-mcu-design-overview" class="level3">
+<h3 class="anchored" data-anchor-id="sec-mcu-design-overview">MCU Design Overview</h3>
 <p>In short, our MCU serves as the primary driver for everything in this project that isn’t our microphone. The most significant components of its design — comprising both peripheral configurations and general functionalities — are listed and expounded upon as follows (note that a more visual representation of these routines can be found in a later <a href="#sec-flowchart">Flowchart</a> section):</p>
 <section id="spi" class="level4">
 <h4 class="anchored" data-anchor-id="spi">SPI</h4>
@@ -413,7 +413,7 @@ Figure&nbsp;8: Flowchart
 </figcaption>
 </figure>
 </div>
-<p>The <a href="#fig-final-flowchart">Figure 8</a> flowchart provides a detailed overview of the microcontroller’s most significant routines.</p>
+<p>The <a href="#fig-final-flowchart">Figure 8</a> flowchart provides a detailed overview of the microcontroller’s most significant routines. This is a visual depiction of the peripherals discussed in section <a href="#sec-mcu-design-overview">MCU Design Overview</a> above. In summary, there is a main loop that continuously polls for the user’s song selection; when a song is eventually chosen, the <code>music_player()</code> function outputs each note using PWM-generation and delay functions, interrupting after every note is done playing to FFT the user’s voice and subsequently determine their error. There is also an occasional interrupt that tells the program to output new lyrics on the LCD. Finally, the <code>singing_grader()</code> function informs the user of their error, before starting the process anew.</p>
 </section>
 </section>
 <section id="results" class="level2">
